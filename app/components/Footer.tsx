@@ -20,7 +20,14 @@ export function Footer({
           <footer className="footer">
             <div className="footer-content">
               <div className="footer-column">
-                <h4>Kavacham</h4>
+                <div className="flex flex-col items-start mb-4">
+                  <img 
+                    src="/assets/Kavacham logo.svg" 
+                    alt="Kavacham Logo" 
+                    className="h-10 w-auto mb-2"
+                  />
+                  <span className="text-xs font-bold text-white">KAVACHAM</span>
+                </div>
                 <p className="text-gray-400 mb-4">Premium mobile accessories for the tech-savvy minimalist.</p>
                 <div className="flex space-x-4">
                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300">

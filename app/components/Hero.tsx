@@ -27,21 +27,19 @@ export function Hero({
   overlay = true,
 }: HeroProps) {
   return (
-    <div className="hero relative overflow-hidden">
-      {image && (
+    <div className="hero relative overflow-hidden min-h-[500px] md:min-h-[600px]">
+      {image && image.url && (
         <div className="hero-image-container absolute inset-0 w-full h-full">
-          <Image
-            data={image}
+          <img
+            src={image.url}
+            alt={image.altText || 'Hero image'}
             className="hero-image w-full h-full object-cover"
-            sizes="100vw"
             loading="eager"
+            style={overlay ? {filter: 'brightness(0.7)'} : {}}
           />
-          {overlay && (
-            <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-          )}
         </div>
       )}
-      <div className="container-custom relative z-10 flex flex-col items-center justify-center text-center py-20 md:py-32 lg:py-40">
+      <div className="container-custom relative z-5 flex flex-col items-center justify-center text-center py-20 md:py-32 lg:py-40">
         <motion.h1
           initial={{opacity: 0, y: 20}}
           animate={{opacity: 1, y: 0}}

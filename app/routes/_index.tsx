@@ -8,6 +8,7 @@ import type {
 } from 'storefrontapi.generated';
 import {ProductItem} from '~/components/ProductItem';
 import {Hero} from '~/components/Hero';
+import {HeroGallery} from '~/components/HeroGallery';
 import {CategoryCard} from '~/components/CategoryCard';
 import {FeaturedProduct} from '~/components/FeaturedProduct';
 import {motion} from 'framer-motion';
@@ -31,13 +32,15 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({context}: LoaderFunctionArgs) {
-  const [{collections}] = await Promise.all([
+  const [{collections}, {collections: heroCollections}] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
+    context.storefront.query(HERO_GALLERY_QUERY),
     // Add other queries here, so that they are loaded in parallel
   ]);
 
   return {
     featuredCollection: collections.nodes[0],
+    heroCollections: heroCollections.nodes,
   };
 }
 
@@ -63,14 +66,35 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   
+  // Transform collections into hero slides
+  const heroSlides = data.heroCollections?.map((collection: any) => ({
+    id: collection.id,
+    title: collection.title,
+    subtitle: collection.description || `Explore our ${collection.title.toLowerCase()} collection`,
+    ctaText: "Shop Collection",
+    ctaLink: `/collections/${collection.handle}`,
+    image: collection.image,
+  })) || [];
+
+  // Fallback slide if no collections are available
+  if (heroSlides.length === 0) {
+    heroSlides.push({
+      id: 'fallback',
+      title: "Protect Your Device in Style",
+      subtitle: "Premium phone skins, covers, and accessories for the tech-savvy minimalist",
+      ctaText: "Shop Collection",
+      ctaLink: "/collections/all",
+      image: data.featuredCollection?.image,
+    });
+  }
+  
   return (
     <div className="home">
-      <Hero 
-        title="Protect Your Device in Style"
-        subtitle="Premium phone skins, covers, and accessories for the tech-savvy minimalist"
-        ctaText="Shop Collection"
-        ctaLink="/collections/all"
-        image={data.featuredCollection?.image as any}
+      <HeroGallery 
+        slides={heroSlides}
+        autoPlay={true}
+        autoPlayInterval={5000}
+        overlay={true}
       />
       
       <section className="section bg-white">
@@ -259,6 +283,30 @@ const FEATURED_COLLECTION_QUERY = `#graphql
     collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
       nodes {
         ...FeaturedCollection
+      }
+    }
+  }
+` as const;
+
+const HERO_GALLERY_QUERY = `#graphql
+  fragment HeroCollection on Collection {
+    id
+    title
+    description
+    handle
+    image {
+      id
+      url
+      altText
+      width
+      height
+    }
+  }
+  query HeroGallery($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    collections(first: 5, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...HeroCollection
       }
     }
   }
