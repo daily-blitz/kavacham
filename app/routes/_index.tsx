@@ -65,6 +65,28 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   };
 }
 
+// Helper function to parse rich text description
+function parseRichTextDescription(richTextValue: string) {
+  try {
+    const parsed = JSON.parse(richTextValue);
+    if (parsed?.children) {
+      return parsed.children.map((child: any) => {
+        if (child.type === 'paragraph' && child.children) {
+          return child.children.map((textNode: any) => ({
+            text: textNode.value || '',
+            bold: textNode.bold || false
+          }));
+        }
+        return [];
+      }).flat();
+    }
+  } catch (e) {
+    // If parsing fails, return the original value as plain text
+    return [{ text: richTextValue, bold: false }];
+  }
+  return [];
+}
+
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   
@@ -75,15 +97,18 @@ export default function Homepage() {
     
     // Extract field values
     const title = fields.find((f: any) => f.key === 'title')?.value || '';
-    const description = fields.find((f: any) => f.key === 'description')?.value || '';
+    const descriptionField = fields.find((f: any) => f.key === 'description')?.value || '';
     const imageField = fields.find((f: any) => f.key === 'image_url');
-    const ctaText = fields.find((f: any) => f.key === 'cta_text')?.value || 'Shop Now';
-    const ctaLink = fields.find((f: any) => f.key === 'cta_link')?.value || '/products';
+    const ctaText = fields.find((f: any) => f.key === 'cta_text')?.value;
+    const ctaLink = fields.find((f: any) => f.key === 'cta_link')?.value || '/collections/all';
+    
+    // Parse rich text description
+    const parsedDescription = parseRichTextDescription(descriptionField);
     
     return {
       id: metaobject.id,
       title,
-      subtitle: description,
+      subtitle: parsedDescription,
       ctaText,
       ctaLink,
       image: imageField?.reference?.image || null,
@@ -104,12 +129,14 @@ export default function Homepage() {
   
   return (
     <div className="home">
-      <HeroGallery 
-        slides={heroSlides}
-        autoPlay={true}
-        autoPlayInterval={5000}
-        overlay={true}
-      />
+      <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+        <HeroGallery 
+          slides={heroSlides}
+          autoPlay={true}
+          autoPlayInterval={5000}
+          overlay={true}
+        />
+      </div>
       
       <section className="section bg-gradient-to-b from-white to-gray-50 py-16 md:py-24">
         <div className="container-custom">
@@ -117,18 +144,24 @@ export default function Homepage() {
             initial={{opacity: 0, y: 20}}
             animate={{opacity: 1, y: 0}}
             transition={{duration: 0.5}}
-            className="text-center mb-16"
+            className="flex flex-col items-center text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-              Shop by Category
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+              Discover Your Perfect Match
             </h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              Explore our curated collections of premium mobile accessories
-            </p>
+            <div className="w-full max-w-4xl px-4">
+              <p className="text-gray-600 text-base sm:text-lg md:text-xl leading-relaxed text-center">
+                Browse our expertly curated categories to find exactly what your device needs. From sleek protection to stylish customization, we&apos;ve organized everything to make your shopping effortless.
+              </p>
+            </div>
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {data.categories?.map((category: any, index: number) => (
+            {data.categories?.sort((a: any, b: any) => {
+              const countA = a.products?.nodes?.length || 0;
+              const countB = b.products?.nodes?.length || 0;
+              return countB - countA; // Sort descending (more products first)
+            }).map((category: any, index: number) => (
               <CategoryCard 
                 key={category.id}
                 title={category.title}
@@ -155,19 +188,23 @@ export default function Homepage() {
             initial={{opacity: 0, y: 20}}
             animate={{opacity: 1, y: 0}}
             transition={{duration: 0.5}}
-            className="text-center mb-12"
+            className="flex flex-col items-center text-center mb-16"
           >
-            <h2 className="text-3xl font-bold mb-4">Trending Products</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Our most popular designs and latest releases
-            </p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+              What&apos;s Hot Right Now
+            </h2>
+            <div className="w-full max-w-4xl px-4">
+              <p className="text-gray-600 text-base sm:text-lg md:text-xl leading-relaxed text-center">
+                Discover the most loved products by our community. These trending items combine style, functionality, and innovation to keep your device looking fresh and protected.
+              </p>
+            </div>
           </motion.div>
           
           <Suspense fallback={<div className="text-center py-12">Loading trending products...</div>}>
             <Await resolve={data.recommendedProducts}>
               {(recommendedProducts) => (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                  {recommendedProducts?.products.nodes.map((product: any, index: number) => (
+                  {recommendedProducts?.products.nodes.slice(0, 8).map((product: any, index: number) => (
                     <FeaturedProduct key={product.id} product={product} index={index} />
                   ))}
                 </div>
@@ -176,7 +213,9 @@ export default function Homepage() {
           </Suspense>
         </div>
       </section>
-      
+
+      {/* Self Healing Scratch Protection Section */}
+
       <section className="relative py-20 overflow-hidden">
         <div 
           className="absolute inset-0 z-0"
@@ -201,90 +240,108 @@ export default function Homepage() {
               </h3>
             </motion.div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
               <motion.div 
-              initial={{opacity: 0, y: 20}}
-              animate={{opacity: 1, y: 0}}
-              transition={{duration: 0.5, delay: 0.1}}
-              className="flex items-center text-white"
-            >
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-4 mr-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                </svg>
-              </div>
-              <h4 className="text-xl font-medium">Accurate Fit</h4>
-            </motion.div>
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5, delay: 0.1}}
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+              >
+                <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
+                  <img 
+                    src="/assets/accurate_fit_kavacham.png" 
+                    alt="Accurate Fit"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                </div>
+                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Accurate Fit</h4>
+              </motion.div>
             
-            <motion.div 
-              initial={{opacity: 0, y: 20}}
-              animate={{opacity: 1, y: 0}}
-              transition={{duration: 0.5, delay: 0.2}}
-              className="flex items-center text-white"
-            >
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-4 mr-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h4 className="text-xl font-medium">Zero Residue Removal</h4>
-            </motion.div>
+              <motion.div 
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5, delay: 0.2}}
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+              >
+                <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
+                  <img 
+                    src="/assets/no_residue_kavacham.png" 
+                    alt="Zero Residue Removal"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                </div>
+                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Zero Residue Removal</h4>
+              </motion.div>
             
-            <motion.div 
-              initial={{opacity: 0, y: 20}}
-              animate={{opacity: 1, y: 0}}
-              transition={{duration: 0.5, delay: 0.3}}
-              className="flex items-center text-white"
-            >
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-4 mr-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                </svg>
-              </div>
-              <h4 className="text-xl font-medium">Unlimited Customization</h4>
-            </motion.div>
+              <motion.div 
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5, delay: 0.3}}
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+              >
+                <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
+                  <img 
+                    src="/assets/customisation_kavacham.png" 
+                    alt="Unlimited Customization"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                </div>
+                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Unlimited Customization</h4>
+              </motion.div>
             
-            <motion.div 
-              initial={{opacity: 0, y: 20}}
-              animate={{opacity: 1, y: 0}}
-              transition={{duration: 0.5, delay: 0.4}}
-              className="flex items-center text-white"
-            >
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-4 mr-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                </svg>
-              </div>
-              <h4 className="text-xl font-medium">Bubble-Free</h4>
-            </motion.div>
+              <motion.div 
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5, delay: 0.4}}
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+              >
+                <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
+                  <img 
+                    src="/assets/bubble_free_kavacham.png" 
+                    alt="Bubble-Free"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                </div>
+                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Bubble-Free</h4>
+              </motion.div>
             
-            <motion.div 
-              initial={{opacity: 0, y: 20}}
-              animate={{opacity: 1, y: 0}}
-              transition={{duration: 0.5, delay: 0.5}}
-              className="flex items-center text-white"
-            >
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-4 mr-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              </div>
-              <h4 className="text-xl font-medium">Edge to Edge Protection</h4>
-            </motion.div>
+              <motion.div 
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5, delay: 0.5}}
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+              >
+                <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
+                  <img 
+                    src="/assets/edge_toedge_kavacham.png" 
+                    alt="Edge to Edge Protection"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                </div>
+                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Edge to Edge Protection</h4>
+              </motion.div>
             
-            <motion.div 
-              initial={{opacity: 0, y: 20}}
-              animate={{opacity: 1, y: 0}}
-              transition={{duration: 0.5, delay: 0.6}}
-              className="flex items-center text-white"
-            >
-              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-full p-4 mr-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
-                </svg>
-              </div>
-              <h4 className="text-xl font-medium">Reduced Fingerprints</h4>
-            </motion.div>
+              <motion.div 
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5, delay: 0.6}}
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+              >
+                <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
+                  <img 
+                    src="/assets/reduced_fingerprint_kavacham.png" 
+                    alt="Reduced Fingerprints"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+                </div>
+                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Reduced Fingerprints</h4>
+              </motion.div>
           </div>
           </div>
         </div>
@@ -367,10 +424,16 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
       width
       height
     }
+    variants(first: 1) {
+      nodes {
+        id
+        availableForSale
+      }
+    }
   }
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
+    products(first: 12, sortKey: UPDATED_AT, reverse: true) {
       nodes {
         ...RecommendedProduct
       }
@@ -391,7 +454,7 @@ const CATEGORIES_QUERY = `#graphql
       width
       height
     }
-    products(first: 1) {
+    products(first: 250) {
       nodes {
         id
       }

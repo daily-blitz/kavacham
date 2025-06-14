@@ -66,32 +66,124 @@ export function CartMain({ layout, cart: originalCart }: CartMainProps) {
 
 function CartEmpty({
   hidden = false,
+  layout,
 }: {
   hidden: boolean;
   layout?: CartMainProps['layout'];
 }) {
   const { close } = useAside();
   return (
-    <div hidden={hidden} className="text-center py-12">
-      <div className="mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="mx-auto text-gray-300">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
-      </div>
-      <h2 className="text-2xl font-semibold mb-4">Your Cart is Empty</h2>
-      <p className="text-gray-600 mb-8">
-        Looks like you haven&apos;t added anything yet, let&apos;s get you started!
-      </p>
-      <Link
-        to="/collections"
-        onClick={close}
-        prefetch="viewport"
-        className="btn btn-primary inline-block bg-black text-white px-6 py-3 rounded-md font-medium hover:bg-gray-800 transition-colors"
+    <div hidden={hidden} className={`flex flex-col items-center justify-center h-full ${layout === 'aside' ? 'px-6 py-8' : 'py-16'}`}>
+      {/* Animated Cart Icon */}
+      <motion.div
+        initial={{ scale: 0, rotate: -10 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ duration: 0.5, type: "spring", bounce: 0.3 }}
+        className="mb-8"
       >
-        Browse Collections
-      </Link>
+        <div className="relative">
+          <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center shadow-lg">
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="40" 
+              height="40" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="1.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              className="text-gray-400"
+            >
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+          </div>
+          {/* Floating dots animation */}
+          <motion.div
+            animate={{ y: [-2, 2, -2] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-2 -right-2 w-4 h-4 bg-gray-300 rounded-full opacity-60"
+          />
+          <motion.div
+            animate={{ y: [2, -2, 2] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+            className="absolute -bottom-1 -left-2 w-3 h-3 bg-gray-300 rounded-full opacity-40"
+          />
+        </div>
+      </motion.div>
+
+      {/* Content */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="text-center space-y-4 max-w-sm"
+      >
+        <h2 className="text-2xl font-bold text-gray-900">Your Cart Awaits</h2>
+        <p className="text-gray-500 leading-relaxed">
+          Ready to find something amazing? Discover our premium collection of mobile accessories designed for style and protection.
+        </p>
+      </motion.div>
+
+      {/* Action Button */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+        className="mt-8 w-full max-w-xs"
+      >
+        <Link
+          to="/collections/all"
+          onClick={close}
+          prefetch="viewport"
+          className="w-full inline-flex items-center justify-center bg-white text-black border-2 border-black hover:bg-black hover:!text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group"
+        >
+          <span>Explore Products</span>
+          <svg 
+            className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link>
+      </motion.div>
+
+      {/* Quick Links */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        className="mt-8 text-center"
+      >
+        <p className="text-xs text-gray-400 mb-2">Popular Categories</p>
+        <div className="flex flex-wrap justify-center gap-2">
+          <Link
+            to="/collections/phone-skins"
+            onClick={close}
+            className="text-xs text-gray-500 hover:text-gray-700 transition-colors duration-200 px-2 py-1 rounded bg-gray-100 hover:bg-gray-200"
+          >
+            Phone Skins
+          </Link>
+          <Link
+            to="/collections/covers"
+            onClick={close}
+            className="text-xs text-gray-500 hover:text-gray-700 transition-colors duration-200 px-2 py-1 rounded bg-gray-100 hover:bg-gray-200"
+          >
+            Covers
+          </Link>
+          <Link
+            to="/collections/accessories"
+            onClick={close}
+            className="text-xs text-gray-500 hover:text-gray-700 transition-colors duration-200 px-2 py-1 rounded bg-gray-100 hover:bg-gray-200"
+          >
+            Accessories
+          </Link>
+        </div>
+      </motion.div>
     </div>
   );
 }
