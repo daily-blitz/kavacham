@@ -128,13 +128,22 @@ export function DeviceSelector({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
     >
-      <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <h3 className="text-lg font-semibold mb-4 text-gray-900">
-          Select Your Device
-        </h3>
-        <p className="text-sm text-gray-600 mb-4">
-          This case is compatible with multiple devices. Please select your device for accurate fitting:
-        </p>
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200 shadow-sm">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-gray-900 rounded-lg">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Select Your Device
+            </h3>
+            <p className="text-sm text-gray-600">
+              Choose your device for the perfect fit
+            </p>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <MobileBrandSelector
@@ -153,20 +162,30 @@ export function DeviceSelector({
         
         {selectedBrand && selectedModel && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
             transition={{ duration: 0.3 }}
-            className="mt-4 p-3 bg-white rounded-md border border-gray-200"
+            className="mt-4 overflow-hidden"
           >
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <p className="text-sm text-gray-700">
-                Selected for: <span className="font-medium text-gray-900">{selectedBrand} {selectedModel}</span>
-              </p>
+            <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="absolute inset-0 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    Perfect Match Found!
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {selectedBrand} {selectedModel}
+                  </p>
+                </div>
+                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              This selection will be noted in your order for proper fulfillment.
-            </p>
           </motion.div>
         )}
       </div>

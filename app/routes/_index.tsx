@@ -224,7 +224,7 @@ export default function Homepage() {
             opacity: 0.9
           }}
         />
-        <div className="container-custom relative z-10">
+        <div className="container-custom relative z-[1]">
           <div className="relative rounded-2xl border border-white/20 bg-white/5 backdrop-blur-sm p-8 md:p-12">
             <motion.div 
               initial={{opacity: 0, y: 20}}
