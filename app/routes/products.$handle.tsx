@@ -84,14 +84,89 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
 
   if (!handle) return {};
 
-  // Load product recommendations
+  // Load product recommendations with fallback to collection products
   const productRecommendations = storefront
-    .query(PRODUCT_RECOMMENDATIONS_QUERY, {
-      variables: {handle},
+    .query(PRODUCT_QUERY, {
+      variables: {handle, selectedOptions: []},
+    })
+    .then(async (productResult) => {
+      // First try native recommendations
+      const recResult = await storefront
+        .query(PRODUCT_RECOMMENDATIONS_QUERY, {
+          variables: {handle},
+        })
+        .catch(() => null);
+      
+      if (recResult?.productRecommendations?.length > 0) {
+        return recResult;
+      }
+      
+      // Fallback to collection-based recommendations
+      const product = productResult?.product;
+      const collectionHandle = product?.collections?.nodes?.[0]?.handle;
+      
+      if (collectionHandle) {
+        const collectionResult = await storefront
+          .query(COLLECTION_PRODUCTS_QUERY, {
+            variables: {collectionHandle, first: 9}, // Get 9 to have extras after filtering
+          })
+          .catch(() => null);
+        
+        if (collectionResult?.collection?.products?.nodes) {
+          // Filter out the current product and limit to 8
+          const filteredProducts = collectionResult.collection.products.nodes
+            .filter((p: any) => p.id !== product.id)
+            .slice(0, 8);
+          
+          return { productRecommendations: filteredProducts };
+        }
+      }
+      
+      // Final fallback: products with same type
+      if (product?.productType) {
+        const typeResult = await storefront
+          .query(`#graphql
+            query ProductsByType($productType: String!, $first: Int) {
+              products(first: $first, query: $productType) {
+                nodes {
+                  id
+                  title
+                  handle
+                  featuredImage {
+                    id
+                    url
+                    altText
+                    width
+                    height
+                  }
+                  priceRange {
+                    minVariantPrice {
+                      amount
+                      currencyCode
+                    }
+                  }
+                }
+              }
+            }
+          `, {
+            variables: {productType: `product_type:${product.productType}`, first: 9},
+          })
+          .catch(() => null);
+        
+        if (typeResult?.products?.nodes) {
+          const filteredProducts = typeResult.products.nodes
+            .filter((p: any) => p.id !== product.id)
+            .slice(0, 8);
+          
+          return { productRecommendations: filteredProducts };
+        }
+      }
+      
+      return { productRecommendations: [] };
     })
     .catch((error) => {
-      console.error(error);
-      return null;
+      console.error('Error fetching product recommendations:', error);
+      return { productRecommendations: [] };
     });
 
   return {
@@ -330,7 +405,9 @@ export default function Product() {
           <Await resolve={productRecommendations}>
             {(response) => {
               const recommendations = response?.productRecommendations || [];
-              if (recommendations.length === 0) return null;
+              if (recommendations.length === 0) {
+                return null;
+              }
               
               return (
                 <motion.section 
@@ -462,8 +539,16 @@ const PRODUCT_FRAGMENT = `#graphql
     descriptionHtml
     description
     tags
+    productType
     encodedVariantExistence
     encodedVariantAvailability
+    collections(first: 1) {
+      nodes {
+        id
+        handle
+        title
+      }
+    }
     featuredImage {
       id
       url
@@ -558,6 +643,38 @@ const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
         minVariantPrice {
           amount
           currencyCode
+        }
+      }
+    }
+  }
+` as const;
+
+const COLLECTION_PRODUCTS_QUERY = `#graphql
+  query CollectionProducts(
+    $collectionHandle: String!
+    $country: CountryCode
+    $language: LanguageCode
+    $first: Int
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $collectionHandle) {
+      products(first: $first) {
+        nodes {
+          id
+          title
+          handle
+          featuredImage {
+            id
+            url
+            altText
+            width
+            height
+          }
+          priceRange {
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
         }
       }
     }

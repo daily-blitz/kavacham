@@ -95,11 +95,11 @@ export function Footer({
                   >
                     <h3 className="text-white font-semibold text-lg">Support</h3>
                     <ul className="space-y-3">
-                      <FooterLink to="/pages/contact">Contact Us</FooterLink>
-                      <FooterLink to="/pages/faq">FAQ</FooterLink>
-                      <FooterLink to="/pages/shipping">Shipping</FooterLink>
-                      <FooterLink to="/pages/returns">Returns</FooterLink>
-                      <FooterLink to="/pages/size-guide">Size Guide</FooterLink>
+                      <FooterLink to="/contact">Contact Us</FooterLink>
+                      <FooterLink to="/faq">FAQ</FooterLink>
+                      <FooterLink to="/how-to-apply">Installation Guide</FooterLink>
+                      <FooterLink to="/shipping">Shipping Info</FooterLink>
+                      <FooterLink to="/returns">Returns & Warranty</FooterLink>
                     </ul>
                   </motion.div>
                   
@@ -113,9 +113,10 @@ export function Footer({
                   >
                     <h3 className="text-white font-semibold text-lg">Company</h3>
                     <ul className="space-y-3">
-                      <FooterLink to="/pages/about">About Us</FooterLink>
-                      <FooterLink to="/pages/careers">Careers</FooterLink>
+                      <FooterLink to="/about">About Us</FooterLink>
                       <FooterLink to="/blogs/news">Blog</FooterLink>
+                      <FooterLink to="/privacy-policy">Privacy Policy</FooterLink>
+                      <FooterLink to="/terms-of-service">Terms of Service</FooterLink>
                       {footer?.menu && header.shop.primaryDomain?.url && (
                         <FooterMenu
                           menu={footer.menu}
@@ -141,11 +142,11 @@ export function Footer({
                     © {new Date().getFullYear()} Kavacham. All rights reserved.
                   </p>
                   <div className="flex items-center gap-8 text-sm">
-                    <Link to="/pages/privacy" className="text-white hover:text-gray-300 transition-colors">
-                      Privacy
+                    <Link to="/privacy-policy" className="text-white hover:text-gray-300 transition-colors">
+                      Privacy Policy
                     </Link>
-                    <Link to="/pages/terms" className="text-white hover:text-gray-300 transition-colors">
-                      Terms
+                    <Link to="/terms-of-service" className="text-white hover:text-gray-300 transition-colors">
+                      Terms of Service
                     </Link>
                     <span className="text-white">Made with ❤️ in India</span>
                   </div>
