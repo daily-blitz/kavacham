@@ -26,11 +26,9 @@ export async function loader({context}: LoaderFunctionArgs) {
               company
               address1
               address2
-              territoryCode
-              zoneCode
+              countryCode
               city
               zip
-              phoneNumber
             }
             addresses(first: 6) {
               nodes {
@@ -41,11 +39,9 @@ export async function loader({context}: LoaderFunctionArgs) {
                 company
                 address1
                 address2
-                territoryCode
-                zoneCode
+                countryCode
                 city
                 zip
-                phoneNumber
               }
             }
           }

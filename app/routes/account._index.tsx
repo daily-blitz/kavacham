@@ -8,7 +8,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     const [customer, orders] = await Promise.all([
       customerAccount.query(
         `#graphql
-          query CustomerDetails {
+          query CustomerDashboard {
             customer {
               id
               firstName
@@ -16,7 +16,7 @@ export async function loader({context}: LoaderFunctionArgs) {
               defaultAddress {
                 formatted
                 city
-                territoryCode
+                countryCode
               }
             }
           }
@@ -29,17 +29,13 @@ export async function loader({context}: LoaderFunctionArgs) {
               orders(first: 3, sortKey: PROCESSED_AT, reverse: true) {
                 nodes {
                   id
-                  number
+                  name
                   processedAt
                   totalPrice {
                     amount
                     currencyCode
                   }
-                  fulfillments(first: 1) {
-                    nodes {
-                      status
-                    }
-                  }
+                  fulfillmentStatus
                 }
               }
             }
@@ -112,7 +108,7 @@ export default function AccountDashboard() {
                 className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
               >
                 <div>
-                  <p className="font-medium text-gray-900">Order #{order.number}</p>
+                  <p className="font-medium text-gray-900">{order.name}</p>
                   <p className="text-sm text-gray-600">
                     {new Date(order.processedAt).toLocaleDateString()}
                   </p>
@@ -122,7 +118,7 @@ export default function AccountDashboard() {
                     {order.totalPrice.currencyCode} {order.totalPrice.amount}
                   </p>
                   <p className="text-sm text-gray-600 capitalize">
-                    {order.fulfillments?.nodes?.[0]?.status?.toLowerCase() || 'Processing'}
+                    {order.fulfillmentStatus?.toLowerCase() || 'Processing'}
                   </p>
                 </div>
               </div>
