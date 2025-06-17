@@ -254,7 +254,20 @@ export async function action({request, context}: ActionFunctionArgs) {
 }
 
 export default function Addresses() {
-  const {customer} = useOutletContext<{customer: CustomerFragment}>();
+  const context = useOutletContext<{customer: CustomerFragment}>();
+  const customer = context?.customer;
+  
+  if (!context || !customer) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading addresses...</p>
+        </div>
+      </div>
+    );
+  }
+
   const {defaultAddress, addresses} = customer;
 
   return (

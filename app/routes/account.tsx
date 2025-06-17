@@ -12,7 +12,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   const customerAccount = context.customerAccount;
   
   try {
-    const customer = await customerAccount.query(
+    const {data} = await customerAccount.query(
       `#graphql
         query CustomerDetails {
           customer {
@@ -50,7 +50,7 @@ export async function loader({context}: LoaderFunctionArgs) {
       `
     );
     
-    return {customer};
+    return {customer: data?.customer};
   } catch (error) {
     if (error instanceof Response && error.status === 401) {
       return customerAccount.login();
@@ -64,29 +64,17 @@ export default function AccountLayout() {
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
-        <div className="container-custom py-8">
+      <div className="container-custom py-8">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{opacity: 0, y: 20}}
             animate={{opacity: 1, y: 0}}
             transition={{duration: 0.6}}
-            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+            className="flex justify-end mb-8"
           >
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                My Account
-              </h1>
-              <p className="text-lg text-gray-600 mt-2">
-                Welcome back{customer?.firstName ? `, ${customer.firstName}` : ''}
-              </p>
-            </div>
             <Logout />
           </motion.div>
-        </div>
-      </div>
-      
-      <div className="container-custom py-12">
-        <div className="max-w-7xl mx-auto">
+          
           <div className="grid gap-8 lg:grid-cols-4">
             <motion.div
               initial={{opacity: 0, x: -20}}
@@ -103,7 +91,7 @@ export default function AccountLayout() {
               className="lg:col-span-3"
             >
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-8">
-                <Outlet />
+                <Outlet context={{customer}} />
               </div>
             </motion.div>
           </div>
@@ -115,17 +103,14 @@ export default function AccountLayout() {
 
 function AccountMenu() {
   const menuItems = [
-    { to: '/account', label: 'Dashboard', icon: '📊', end: true },
-    { to: '/account/orders', label: 'Orders', icon: '📦' },
-    { to: '/account/profile', label: 'Profile', icon: '👤' },
-    { to: '/account/addresses', label: 'Addresses', icon: '📍' },
+    { to: '/account', label: 'Overview', end: true },
+    { to: '/account/orders', label: 'Orders' },
+    { to: '/account/profile', label: 'Profile' },
+    { to: '/account/addresses', label: 'Addresses' },
   ];
 
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6">
-      <h3 className="text-sm font-semibold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-6 uppercase tracking-wide">
-        Account Menu
-      </h3>
       <nav className="space-y-2">
         {menuItems.map((item, index) => (
           <motion.div
@@ -138,20 +123,23 @@ function AccountMenu() {
               to={item.to}
               end={item.end}
               className={({isActive}) => 
-                `flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 group ${
+                `flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 group ${
                   isActive 
-                    ? 'bg-gradient-to-r from-gray-900 to-gray-700 text-white shadow-lg scale-105' 
-                    : 'text-gray-700 hover:bg-gray-100/80 hover:text-gray-900 hover:scale-105 hover:shadow-md'
+                    ? 'bg-gradient-to-r from-gray-900 to-gray-700 text-white shadow-lg' 
+                    : 'text-gray-700 hover:bg-gray-100/80 hover:text-gray-900 hover:shadow-md'
                 }`
               }
             >
-              <span className="text-lg group-hover:scale-110 transition-transform duration-300">{item.icon}</span>
-              {item.label}
-              <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
+              {({isActive}) => (
+                <>
+                  <span>{item.label}</span>
+                  <div className={`transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </>
+              )}
             </NavLink>
           </motion.div>
         ))}
@@ -169,7 +157,9 @@ function Logout() {
         whileTap={{scale: 0.95}}
         className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-700 bg-white/80 backdrop-blur-sm border border-gray-300/50 rounded-xl hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl"
       >
-        <span className="text-lg">🚪</span>
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
         Sign out
       </motion.button>
     </Form>

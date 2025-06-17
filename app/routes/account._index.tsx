@@ -58,6 +58,17 @@ export default function AccountDashboard() {
   const {customer, orders} = useLoaderData<typeof loader>();
   const recentOrders = orders?.customer?.orders?.nodes || [];
 
+  if (!customer) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <motion.div
@@ -65,14 +76,13 @@ export default function AccountDashboard() {
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.6}}
       >
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-8">Dashboard</h2>
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-8">Account Overview</h2>
         
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <DashboardCard
             title="Recent Orders"
             value={recentOrders.length.toString()}
             description="Orders in the last 30 days"
-            icon="📦"
             href="/account/orders"
             index={0}
           />
@@ -81,7 +91,6 @@ export default function AccountDashboard() {
             title="Profile"
             value={customer?.firstName || "Not set"}
             description="Manage your personal information"
-            icon="👤"
             href="/account/profile"
             index={1}
           />
@@ -90,7 +99,6 @@ export default function AccountDashboard() {
             title="Addresses"
             value={customer?.defaultAddress ? "Set" : "Not set"}
             description="Manage shipping addresses"
-            icon="📍"
             href="/account/addresses"
             index={2}
           />
@@ -152,14 +160,12 @@ function DashboardCard({
   title,
   value,
   description,
-  icon,
   href,
   index,
 }: {
   title: string;
   value: string;
   description: string;
-  icon: string;
   href: string;
   index: number;
 }) {
@@ -176,25 +182,21 @@ function DashboardCard({
         className="block p-6 bg-gradient-to-br from-white to-gray-50 rounded-2xl hover:shadow-xl transition-all duration-300 border border-gray-200/50 relative overflow-hidden"
       >
         <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <span className="text-2xl">{icon}</span>
-            </div>
+          <div className="flex items-center justify-between mb-6">
             <h3 className="font-semibold text-gray-900 group-hover:text-black transition-colors duration-300">
               {title}
             </h3>
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
           </div>
-          <p className="text-2xl font-bold text-gray-900 mb-2">{value}</p>
+          <p className="text-3xl font-bold text-gray-900 mb-2">{value}</p>
           <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
         </div>
         
         <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gray-100/30 to-transparent rounded-full blur-xl group-hover:w-32 group-hover:h-32 transition-all duration-700 opacity-50" />
-        
-        <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </div>
       </Link>
     </motion.div>
   );

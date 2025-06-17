@@ -89,6 +89,17 @@ export default function AccountProfile() {
   const action = useActionData<ActionResponse>();
   const customer = action?.customer ?? account?.customer;
 
+  if (!account || !customer) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-2 border-gray-300 border-t-gray-900 rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <motion.div
