@@ -17,7 +17,8 @@
       "Bash(npx shopify hydrogen customer-account setup:*)",
       "Bash(npx shopify hydrogen:*)",
       "Bash(ls:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "WebFetch(domain:kavacham-0b0a40bdfa29d853f6c1.o2.myshopify.dev)"
     ],
     "deny": []
   }
