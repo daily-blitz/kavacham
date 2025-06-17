@@ -93,7 +93,7 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
       // First try native recommendations
       const recResult = await storefront
         .query(PRODUCT_RECOMMENDATIONS_QUERY, {
-          variables: {handle},
+          variables: {productId: productResult.product.id},
         })
         .catch(() => null);
       
@@ -624,11 +624,11 @@ const PRODUCT_QUERY = `#graphql
 
 const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
   query ProductRecommendations(
-    $handle: String!
+    $productId: ID!
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
-    productRecommendations(handle: $handle, limit: 8) {
+    productRecommendations(productId: $productId) {
       id
       title
       handle

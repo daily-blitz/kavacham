@@ -1,4 +1,4 @@
-import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link, type MetaFunction} from 'react-router';
 import {motion} from 'framer-motion';
 
@@ -16,7 +16,7 @@ export async function loader({context}: LoaderFunctionArgs) {
     },
   });
 
-  return json({pages});
+  return {pages};
 }
 
 export default function PagesIndex() {
