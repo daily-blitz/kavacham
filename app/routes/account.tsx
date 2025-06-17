@@ -66,21 +66,34 @@ export default function AccountLayout() {
   const {customer} = useLoaderData<typeof loader>();
   
   return (
-    <div className="container-custom py-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">
-            Welcome{customer?.firstName ? `, ${customer.firstName}` : ''}
-          </h1>
-          <Logout />
-        </div>
-        
-        <div className="grid gap-8 md:grid-cols-3">
-          <div className="md:col-span-1">
-            <AccountMenu />
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white border-b border-gray-200">
+        <div className="container-custom py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                My Account
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Welcome back{customer?.firstName ? `, ${customer.firstName}` : ''}
+              </p>
+            </div>
+            <Logout />
           </div>
-          <div className="md:col-span-2">
-            <Outlet />
+        </div>
+      </div>
+      
+      <div className="container-custom py-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid gap-8 lg:grid-cols-4">
+            <div className="lg:col-span-1">
+              <AccountMenu />
+            </div>
+            <div className="lg:col-span-3">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <Outlet />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -89,45 +102,38 @@ export default function AccountLayout() {
 }
 
 function AccountMenu() {
+  const menuItems = [
+    { to: '/account', label: 'Dashboard', icon: '📊', end: true },
+    { to: '/account/orders', label: 'Orders', icon: '📦' },
+    { to: '/account/profile', label: 'Profile', icon: '👤' },
+    { to: '/account/addresses', label: 'Addresses', icon: '📍' },
+  ];
+
   return (
-    <nav className="space-y-2">
-      <NavLink 
-        to="/account/orders" 
-        className={({isActive}) => 
-          `block px-4 py-2 rounded-lg transition-colors ${
-            isActive 
-              ? 'bg-black text-white' 
-              : 'text-gray-700 hover:bg-gray-100'
-          }`
-        }
-      >
-        Orders
-      </NavLink>
-      <NavLink 
-        to="/account/profile" 
-        className={({isActive}) => 
-          `block px-4 py-2 rounded-lg transition-colors ${
-            isActive 
-              ? 'bg-black text-white' 
-              : 'text-gray-700 hover:bg-gray-100'
-          }`
-        }
-      >
-        Profile
-      </NavLink>
-      <NavLink 
-        to="/account/addresses" 
-        className={({isActive}) => 
-          `block px-4 py-2 rounded-lg transition-colors ${
-            isActive 
-              ? 'bg-black text-white' 
-              : 'text-gray-700 hover:bg-gray-100'
-          }`
-        }
-      >
-        Addresses
-      </NavLink>
-    </nav>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+      <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">
+        Account Menu
+      </h3>
+      <nav className="space-y-1">
+        {menuItems.map((item) => (
+          <NavLink 
+            key={item.to}
+            to={item.to}
+            end={item.end}
+            className={({isActive}) => 
+              `flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                isActive 
+                  ? 'bg-black text-white shadow-sm' 
+                  : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+              }`
+            }
+          >
+            <span className="text-lg">{item.icon}</span>
+            {item.label}
+          </NavLink>
+        ))}
+      </nav>
+    </div>
   );
 }
 
@@ -136,8 +142,9 @@ function Logout() {
     <Form method="POST" action="/account/logout">
       <button 
         type="submit"
-        className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 shadow-sm"
       >
+        <span>🚪</span>
         Sign out
       </button>
     </Form>

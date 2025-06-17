@@ -257,24 +257,36 @@ export default function Addresses() {
   const {defaultAddress, addresses} = customer;
 
   return (
-    <div className="account-addresses">
-      <h2>Addresses</h2>
-      <br />
-      {!addresses.nodes.length ? (
-        <p>You have no addresses saved.</p>
-      ) : (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">Shipping Addresses</h2>
+        <p className="text-gray-600">Manage your shipping addresses for faster checkout.</p>
+      </div>
+
+      <div className="bg-gray-50 rounded-lg p-6">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Add New Address</h3>
+        <NewAddressForm />
+      </div>
+
+      {addresses.nodes.length > 0 ? (
         <div>
-          <div>
-            <legend>Create address</legend>
-            <NewAddressForm />
-          </div>
-          <br />
-          <hr />
-          <br />
+          <h3 className="text-lg font-medium text-gray-900 mb-4">
+            Saved Addresses ({addresses.nodes.length})
+          </h3>
           <ExistingAddresses
             addresses={addresses}
             defaultAddress={defaultAddress}
           />
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <div className="mb-6">
+            <span className="text-6xl">📍</span>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No addresses saved</h3>
+          <p className="text-gray-600">
+            Add your first shipping address to make checkout faster and easier.
+          </p>
         </div>
       )}
     </div>
@@ -303,13 +315,21 @@ function NewAddressForm() {
       defaultAddress={null}
     >
       {({stateForMethod}) => (
-        <div>
+        <div className="flex justify-end">
           <button
             disabled={stateForMethod('POST') !== 'idle'}
             formMethod="POST"
             type="submit"
+            className="px-6 py-2 bg-black text-white font-medium rounded-lg hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
-            {stateForMethod('POST') !== 'idle' ? 'Creating' : 'Create'}
+            {stateForMethod('POST') !== 'idle' ? (
+              <span className="flex items-center gap-2">
+                <span className="animate-spin">⟳</span>
+                Creating...
+              </span>
+            ) : (
+              'Add Address'
+            )}
           </button>
         </div>
       )}
@@ -322,34 +342,55 @@ function ExistingAddresses({
   defaultAddress,
 }: Pick<CustomerFragment, 'addresses' | 'defaultAddress'>) {
   return (
-    <div>
-      <legend>Existing addresses</legend>
+    <div className="grid gap-6 md:grid-cols-2">
       {addresses.nodes.map((address) => (
-        <AddressForm
-          key={address.id}
-          addressId={address.id}
-          address={address}
-          defaultAddress={defaultAddress}
-        >
-          {({stateForMethod}) => (
-            <div>
-              <button
-                disabled={stateForMethod('PUT') !== 'idle'}
-                formMethod="PUT"
-                type="submit"
-              >
-                {stateForMethod('PUT') !== 'idle' ? 'Saving' : 'Save'}
-              </button>
-              <button
-                disabled={stateForMethod('DELETE') !== 'idle'}
-                formMethod="DELETE"
-                type="submit"
-              >
-                {stateForMethod('DELETE') !== 'idle' ? 'Deleting' : 'Delete'}
-              </button>
+        <div key={address.id} className="border border-gray-200 rounded-lg p-6 relative">
+          {defaultAddress?.id === address.id && (
+            <div className="absolute top-4 right-4">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                ✓ Default
+              </span>
             </div>
           )}
-        </AddressForm>
+          
+          <div className="mb-4">
+            <div className="text-sm text-gray-600 space-y-1">
+              <p className="font-medium text-gray-900">{address.firstName} {address.lastName}</p>
+              {address.company && <p>{address.company}</p>}
+              <p>{address.address1}</p>
+              {address.address2 && <p>{address.address2}</p>}
+              <p>{address.city}, {address.zoneCode} {address.zip}</p>
+              {address.phoneNumber && <p>{address.phoneNumber}</p>}
+            </div>
+          </div>
+
+          <AddressForm
+            addressId={address.id}
+            address={address}
+            defaultAddress={defaultAddress}
+          >
+            {({stateForMethod}) => (
+              <div className="flex gap-2">
+                <button
+                  disabled={stateForMethod('PUT') !== 'idle'}
+                  formMethod="PUT"
+                  type="submit"
+                  className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed transition-colors"
+                >
+                  {stateForMethod('PUT') !== 'idle' ? 'Saving...' : 'Edit'}
+                </button>
+                <button
+                  disabled={stateForMethod('DELETE') !== 'idle'}
+                  formMethod="DELETE"
+                  type="submit"
+                  className="px-4 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200 disabled:bg-red-100 disabled:cursor-not-allowed transition-colors"
+                >
+                  {stateForMethod('DELETE') !== 'idle' ? 'Deleting...' : 'Delete'}
+                </button>
+              </div>
+            )}
+          </AddressForm>
+        </div>
       ))}
     </div>
   );
