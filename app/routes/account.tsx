@@ -2,6 +2,7 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {Form, NavLink, Outlet, useLoaderData} from 'react-router';
+import {motion} from 'framer-motion';
 
 export function shouldRevalidate() {
   return true;
@@ -62,34 +63,49 @@ export default function AccountLayout() {
   const {customer} = useLoaderData<typeof loader>();
   
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-200">
-        <div className="container-custom py-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
+        <div className="container-custom py-8">
+          <motion.div
+            initial={{opacity: 0, y: 20}}
+            animate={{opacity: 1, y: 0}}
+            transition={{duration: 0.6}}
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+          >
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                 My Account
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-lg text-gray-600 mt-2">
                 Welcome back{customer?.firstName ? `, ${customer.firstName}` : ''}
               </p>
             </div>
             <Logout />
-          </div>
+          </motion.div>
         </div>
       </div>
       
-      <div className="container-custom py-8">
-        <div className="max-w-6xl mx-auto">
+      <div className="container-custom py-12">
+        <div className="max-w-7xl mx-auto">
           <div className="grid gap-8 lg:grid-cols-4">
-            <div className="lg:col-span-1">
+            <motion.div
+              initial={{opacity: 0, x: -20}}
+              animate={{opacity: 1, x: 0}}
+              transition={{duration: 0.6, delay: 0.2}}
+              className="lg:col-span-1"
+            >
               <AccountMenu />
-            </div>
-            <div className="lg:col-span-3">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            </motion.div>
+            <motion.div
+              initial={{opacity: 0, x: 20}}
+              animate={{opacity: 1, x: 0}}
+              transition={{duration: 0.6, delay: 0.4}}
+              className="lg:col-span-3"
+            >
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-8">
                 <Outlet />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -106,27 +122,38 @@ function AccountMenu() {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-      <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6">
+      <h3 className="text-sm font-semibold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-6 uppercase tracking-wide">
         Account Menu
       </h3>
-      <nav className="space-y-1">
-        {menuItems.map((item) => (
-          <NavLink 
+      <nav className="space-y-2">
+        {menuItems.map((item, index) => (
+          <motion.div
             key={item.to}
-            to={item.to}
-            end={item.end}
-            className={({isActive}) => 
-              `flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                isActive 
-                  ? 'bg-black text-white shadow-sm' 
-                  : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-              }`
-            }
+            initial={{opacity: 0, x: -10}}
+            animate={{opacity: 1, x: 0}}
+            transition={{duration: 0.3, delay: index * 0.1}}
           >
-            <span className="text-lg">{item.icon}</span>
-            {item.label}
-          </NavLink>
+            <NavLink 
+              to={item.to}
+              end={item.end}
+              className={({isActive}) => 
+                `flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 group ${
+                  isActive 
+                    ? 'bg-gradient-to-r from-gray-900 to-gray-700 text-white shadow-lg scale-105' 
+                    : 'text-gray-700 hover:bg-gray-100/80 hover:text-gray-900 hover:scale-105 hover:shadow-md'
+                }`
+              }
+            >
+              <span className="text-lg group-hover:scale-110 transition-transform duration-300">{item.icon}</span>
+              {item.label}
+              <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </NavLink>
+          </motion.div>
         ))}
       </nav>
     </div>
@@ -136,13 +163,15 @@ function AccountMenu() {
 function Logout() {
   return (
     <Form method="POST" action="/account/logout">
-      <button 
+      <motion.button 
         type="submit"
-        className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-all duration-200 shadow-sm"
+        whileHover={{scale: 1.05}}
+        whileTap={{scale: 0.95}}
+        className="flex items-center gap-2 px-6 py-3 text-sm font-medium text-gray-700 bg-white/80 backdrop-blur-sm border border-gray-300/50 rounded-xl hover:bg-gray-50/80 hover:text-gray-900 transition-all duration-300 shadow-lg hover:shadow-xl"
       >
-        <span>🚪</span>
+        <span className="text-lg">🚪</span>
         Sign out
-      </button>
+      </motion.button>
     </Form>
   );
 }
