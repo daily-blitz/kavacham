@@ -125,7 +125,7 @@ function AccountMenu() {
               className={({isActive}) => 
                 `flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 group ${
                   isActive 
-                    ? 'bg-gradient-to-r from-gray-900 to-gray-700 text-white shadow-lg' 
+                    ? 'bg-gradient-to-r from-gray-900 to-gray-700 !text-white shadow-lg [&>span]:!text-white [&_svg]:!text-white' 
                     : 'text-gray-700 hover:bg-gray-100/80 hover:text-gray-900 hover:shadow-md'
                 }`
               }
@@ -134,7 +134,7 @@ function AccountMenu() {
                 <>
                   <span>{item.label}</span>
                   <div className={`transition-opacity duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className={`w-4 h-4 ${isActive ? 'text-white' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                   </div>
