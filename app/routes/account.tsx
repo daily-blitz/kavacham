@@ -3,6 +3,7 @@ import {
 } from '@shopify/remix-oxygen';
 import {Form, NavLink, Outlet, useLoaderData} from 'react-router';
 import {motion} from 'framer-motion';
+import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
 
 export function shouldRevalidate() {
   return true;
@@ -12,43 +13,7 @@ export async function loader({context}: LoaderFunctionArgs) {
   const customerAccount = context.customerAccount;
   
   try {
-    const {data} = await customerAccount.query(
-      `#graphql
-        query CustomerDetails {
-          customer {
-            id
-            firstName
-            lastName
-            defaultAddress {
-              id
-              formatted
-              firstName
-              lastName
-              company
-              address1
-              address2
-              countryCode
-              city
-              zip
-            }
-            addresses(first: 6) {
-              nodes {
-                id
-                formatted
-                firstName
-                lastName
-                company
-                address1
-                address2
-                countryCode
-                city
-                zip
-              }
-            }
-          }
-        }
-      `
-    );
+    const {data} = await customerAccount.query(CUSTOMER_DETAILS_QUERY);
     
     return {customer: data?.customer};
   } catch (error) {
@@ -61,6 +26,17 @@ export async function loader({context}: LoaderFunctionArgs) {
 
 export default function AccountLayout() {
   const {customer} = useLoaderData<typeof loader>();
+  
+  if (!customer) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-12 h-12 border-3 border-gray-300 border-t-gray-900 rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Loading account data...</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
