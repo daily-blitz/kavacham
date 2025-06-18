@@ -292,7 +292,7 @@ export default function Addresses() {
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.6, delay: 0.2}}
-        className="bg-gradient-to-br from-white via-gray-50/30 to-white rounded-3xl p-8 md:p-12 lg:p-16 border border-gray-200/50 shadow-lg relative overflow-hidden max-w-6xl mx-auto"
+        className="bg-gradient-to-br from-white via-gray-50/30 to-white rounded-3xl p-8 md:p-12 lg:p-16 border border-gray-200/50 shadow-lg relative overflow-hidden"
       >
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-8">
@@ -541,11 +541,11 @@ export function AddressForm({
   const error = action?.error?.[addressId];
   const isDefaultAddress = defaultAddress?.id === addressId;
   return (
-    <Form id={addressId} className="space-y-6">
-      <fieldset className="space-y-6">
+    <Form id={addressId} className="space-y-6 w-full">
+      <fieldset className="space-y-6 w-full">
         <input type="hidden" name="addressId" defaultValue={addressId} />
         
-        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
           <div>
             <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-3">First name*</label>
             <input
@@ -590,7 +590,7 @@ export function AddressForm({
           />
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
           <div>
             <label htmlFor="address1" className="block text-sm font-semibold text-gray-700 mb-3">Address line*</label>
             <input
@@ -620,7 +620,7 @@ export function AddressForm({
           </div>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-3">
           <div>
             <label htmlFor="city" className="block text-sm font-semibold text-gray-700 mb-3">City*</label>
             <input
@@ -665,7 +665,7 @@ export function AddressForm({
           </div>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
           <div>
             <label htmlFor="territoryCode" className="block text-sm font-semibold text-gray-700 mb-3">Country Code*</label>
             <input
