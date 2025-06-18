@@ -271,29 +271,45 @@ export default function Addresses() {
   const {defaultAddress, addresses} = customer;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
+      {/* Header Section */}
       <motion.div
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.6}}
+        className="text-center"
       >
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-3">Shipping Addresses</h2>
-        <p className="text-gray-600 text-lg">Manage your shipping addresses for faster checkout.</p>
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-4">
+          Shipping Addresses
+        </h2>
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+          Manage your delivery locations for faster and more convenient checkout experiences.
+        </p>
       </motion.div>
 
+      {/* Add New Address Section */}
       <motion.div
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.6, delay: 0.2}}
-        className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl p-8 border border-gray-200/50"
+        className="bg-gradient-to-br from-white via-gray-50/30 to-white rounded-3xl p-8 md:p-10 border border-gray-200/50 shadow-lg relative overflow-hidden"
       >
-        <h3 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-            <span className="text-lg">📍</span>
+        <div className="relative z-10">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-600 flex items-center justify-center">
+              <span className="text-2xl text-white">📍</span>
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-1">Add New Address</h3>
+              <p className="text-gray-600">Set up a new shipping destination</p>
+            </div>
           </div>
-          Add New Address
-        </h3>
-        <NewAddressForm />
+          <NewAddressForm />
+        </div>
+        
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-100/20 to-transparent rounded-full blur-2xl" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-gray-50/30 to-transparent rounded-full blur-xl" />
       </motion.div>
 
       {addresses.nodes.length > 0 ? (
@@ -302,13 +318,20 @@ export default function Addresses() {
           animate={{opacity: 1, y: 0}}
           transition={{duration: 0.6, delay: 0.4}}
         >
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-gray-900">
-              Saved Addresses
-            </h3>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                Your Saved Addresses
+              </h3>
+              <p className="text-gray-600">Quick access to your delivery locations</p>
+            </div>
             <div className="text-right">
-              <p className="text-sm text-gray-500">Total Addresses</p>
-              <p className="text-2xl font-bold text-gray-900">{addresses.nodes.length}</p>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-4 border border-gray-200/50">
+                <p className="text-sm text-gray-500 mb-1">Total Addresses</p>
+                <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                  {addresses.nodes.length}
+                </p>
+              </div>
             </div>
           </div>
           <ExistingAddresses
@@ -321,7 +344,7 @@ export default function Addresses() {
           initial={{opacity: 0, scale: 0.95}}
           animate={{opacity: 1, scale: 1}}
           transition={{duration: 0.6, delay: 0.4}}
-          className="text-center py-16"
+          className="flex flex-col items-center justify-center text-center py-16"
         >
           <div className="mb-8">
             <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mb-4">
@@ -329,7 +352,7 @@ export default function Addresses() {
             </div>
           </div>
           <h3 className="text-2xl font-bold text-gray-900 mb-3">No addresses saved</h3>
-          <p className="text-gray-600 max-w-md mx-auto leading-relaxed">
+          <p className="text-gray-600 max-w-md mx-auto leading-relaxed text-center">
             Add your first shipping address to make checkout faster and easier.
           </p>
         </motion.div>
@@ -389,33 +412,56 @@ function ExistingAddresses({
   defaultAddress,
 }: Pick<CustomerFragment, 'addresses' | 'defaultAddress'>) {
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <div className="grid gap-8 md:grid-cols-2">
       {addresses.nodes.map((address, index) => (
         <motion.div 
           key={address.id}
           initial={{opacity: 0, y: 20}}
           animate={{opacity: 1, y: 0}}
           transition={{duration: 0.5, delay: index * 0.1}}
-          className="group bg-gradient-to-br from-white to-gray-50/50 border border-gray-200/50 rounded-2xl p-6 relative hover:shadow-xl transition-all duration-300 overflow-hidden"
+          className="group bg-gradient-to-br from-white via-gray-50/20 to-white border border-gray-200/50 rounded-3xl p-8 relative hover:shadow-2xl transition-all duration-500 overflow-hidden"
         >
           {defaultAddress?.id === address.id && (
-            <div className="absolute top-4 right-4 z-10">
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100/80 text-green-800 border border-green-200/50 backdrop-blur-sm">
-                ✓ Default
-              </span>
+            <div className="absolute top-6 right-6 z-10">
+              <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg">
+                ✓ DEFAULT
+              </div>
             </div>
           )}
           
-          <div className="mb-6 relative z-10">
-            <div className="text-sm text-gray-600 space-y-2">
-              <p className="font-bold text-gray-900 text-lg">{address.firstName} {address.lastName}</p>
-              {address.company && <p className="font-medium text-gray-700">{address.company}</p>}
-              <div className="space-y-1 text-gray-600">
-                <p>{address.address1}</p>
-                {address.address2 && <p>{address.address2}</p>}
-                <p>{address.city}, {address.zoneCode} {address.zip}</p>
-                {address.phoneNumber && <p className="font-medium">{address.phoneNumber}</p>}
+          <div className="mb-8 relative z-10">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <span className="text-xl">🏠</span>
               </div>
+              <div className="flex-1">
+                <h4 className="font-bold text-gray-900 text-xl mb-1">
+                  {address.firstName} {address.lastName}
+                </h4>
+                {address.company && (
+                  <p className="text-gray-600 font-medium bg-gray-50 inline-block px-3 py-1 rounded-full text-sm">
+                    {address.company}
+                  </p>
+                )}
+              </div>
+            </div>
+            
+            <div className="space-y-3 text-gray-700 leading-relaxed">
+              <div className="flex items-start gap-3">
+                <span className="text-gray-400 mt-1">📍</span>
+                <div>
+                  <p className="font-medium">{address.address1}</p>
+                  {address.address2 && <p>{address.address2}</p>}
+                  <p className="text-gray-600">{address.city}, {address.zoneCode} {address.zip}</p>
+                </div>
+              </div>
+              
+              {address.phoneNumber && (
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-400">📞</span>
+                  <p className="font-medium">{address.phoneNumber}</p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -425,16 +471,25 @@ function ExistingAddresses({
             defaultAddress={defaultAddress}
           >
             {({stateForMethod}) => (
-              <div className="flex gap-3 relative z-10">
+              <div className="flex gap-4 relative z-10">
                 <motion.button
                   disabled={stateForMethod('PUT') !== 'idle'}
                   formMethod="PUT"
                   type="submit"
                   whileHover={stateForMethod('PUT') === 'idle' ? {scale: 1.05} : {}}
                   whileTap={stateForMethod('PUT') === 'idle' ? {scale: 0.95} : {}}
-                  className="flex-1 px-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-200/50 text-gray-700 text-sm font-semibold rounded-xl hover:bg-gray-50/80 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-900 to-gray-700 text-white text-sm font-semibold rounded-2xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  {stateForMethod('PUT') !== 'idle' ? 'Saving...' : 'Edit'}
+                  {stateForMethod('PUT') !== 'idle' ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="animate-spin text-lg">⟳</span>
+                      Saving...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2">
+                      ✏️ Edit
+                    </span>
+                  )}
                 </motion.button>
                 <motion.button
                   disabled={stateForMethod('DELETE') !== 'idle'}
@@ -442,15 +497,26 @@ function ExistingAddresses({
                   type="submit"
                   whileHover={stateForMethod('DELETE') === 'idle' ? {scale: 1.05} : {}}
                   whileTap={stateForMethod('DELETE') === 'idle' ? {scale: 0.95} : {}}
-                  className="px-4 py-3 bg-red-100/80 backdrop-blur-sm border border-red-200/50 text-red-700 text-sm font-semibold rounded-xl hover:bg-red-200/80 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-semibold rounded-2xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  {stateForMethod('DELETE') !== 'idle' ? 'Deleting...' : 'Delete'}
+                  {stateForMethod('DELETE') !== 'idle' ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="animate-spin text-lg">⟳</span>
+                      Deleting...
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2">
+                      🗑️ Delete
+                    </span>
+                  )}
                 </motion.button>
               </div>
             )}
           </AddressForm>
           
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-100/20 to-transparent rounded-full blur-2xl group-hover:w-40 group-hover:h-40 transition-all duration-700 opacity-50" />
+          {/* Enhanced decorative elements */}
+          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-gray-100/15 to-transparent rounded-full blur-3xl group-hover:w-56 group-hover:h-56 transition-all duration-700" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-gray-50/20 to-transparent rounded-full blur-2xl group-hover:w-32 group-hover:h-32 transition-all duration-700" />
         </motion.div>
       ))}
     </div>

@@ -92,7 +92,7 @@ function EmptyOrders() {
       initial={{opacity: 0, scale: 0.95}}
       animate={{opacity: 1, scale: 1}}
       transition={{duration: 0.6}}
-      className="text-center py-16"
+      className="flex flex-col items-center justify-center text-center py-16"
     >
       <div className="mb-8">
         <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mb-4">
@@ -100,7 +100,7 @@ function EmptyOrders() {
         </div>
       </div>
       <h3 className="text-2xl font-bold text-gray-900 mb-3">No orders yet</h3>
-      <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed">
+      <p className="text-gray-600 mb-8 max-w-md mx-auto leading-relaxed text-center">
         You haven't placed any orders yet. Start shopping to see your orders here.
       </p>
       <motion.div
@@ -109,7 +109,7 @@ function EmptyOrders() {
       >
         <Link 
           to="/collections"
-          className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-gray-900 to-gray-700 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 shadow-md"
+          className="inline-flex items-center gap-2 px-8 py-4 bg-black text-white font-semibold rounded-full hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl"
         >
           Start Shopping
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

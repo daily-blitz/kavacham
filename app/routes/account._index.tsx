@@ -70,37 +70,93 @@ export default function AccountDashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
+      {/* Welcome Section */}
       <motion.div
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.6}}
+        className="relative overflow-hidden"
       >
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-8">Account Overview</h2>
+        <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-3xl p-8 md:p-12 text-white relative">
+          <div className="relative z-10">
+            <motion.div
+              initial={{opacity: 0, x: -20}}
+              animate={{opacity: 1, x: 0}}
+              transition={{duration: 0.6, delay: 0.2}}
+            >
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">
+                Welcome back, {customer?.firstName || 'Valued Customer'}! 👋
+              </h1>
+              <p className="text-gray-300 text-lg leading-relaxed max-w-2xl">
+                Manage your orders, update your profile, and track your shopping journey all in one place.
+              </p>
+            </motion.div>
+            
+            <motion.div
+              initial={{opacity: 0, y: 20}}
+              animate={{opacity: 1, y: 0}}
+              transition={{duration: 0.6, delay: 0.4}}
+              className="mt-8 flex flex-wrap gap-4"
+            >
+              <Link 
+                to="/collections"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Continue Shopping
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+              <Link 
+                to="/account/orders"
+                className="inline-flex items-center gap-2 px-6 py-3 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+              >
+                View Orders
+              </Link>
+            </motion.div>
+          </div>
+          
+          {/* Decorative elements */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-3xl opacity-50" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-white/5 to-transparent rounded-full blur-2xl" />
+        </div>
+      </motion.div>
+
+      {/* Quick Stats */}
+      <motion.div
+        initial={{opacity: 0, y: 20}}
+        animate={{opacity: 1, y: 0}}
+        transition={{duration: 0.6, delay: 0.2}}
+      >
+        <h2 className="text-2xl font-bold text-gray-900 mb-8">Quick Overview</h2>
         
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <DashboardCard
-            title="Recent Orders"
+            title="Order History"
             value={recentOrders.length.toString()}
-            description="Orders in the last 30 days"
+            description="Total orders placed"
             href="/account/orders"
             index={0}
+            icon="📦"
           />
           
           <DashboardCard
-            title="Profile"
-            value={customer?.firstName || "Not set"}
-            description="Manage your personal information"
+            title="Profile Settings"
+            value={customer?.firstName ? "Complete" : "Incomplete"}
+            description="Personal information status"
             href="/account/profile"
             index={1}
+            icon="👤"
           />
           
           <DashboardCard
-            title="Addresses"
-            value={customer?.defaultAddress ? "Set" : "Not set"}
-            description="Manage shipping addresses"
+            title="Shipping Addresses"
+            value={customer?.defaultAddress ? "1+ Saved" : "None"}
+            description="Saved delivery locations"
             href="/account/addresses"
             index={2}
+            icon="📍"
           />
         </div>
       </motion.div>
@@ -162,12 +218,14 @@ function DashboardCard({
   description,
   href,
   index,
+  icon,
 }: {
   title: string;
   value: string;
   description: string;
   href: string;
   index: number;
+  icon?: string;
 }) {
   return (
     <motion.div
@@ -179,24 +237,41 @@ function DashboardCard({
     >
       <Link 
         to={href}
-        className="block p-6 bg-gradient-to-br from-white to-gray-50 rounded-2xl hover:shadow-xl transition-all duration-300 border border-gray-200/50 relative overflow-hidden"
+        className="block p-8 bg-gradient-to-br from-white via-gray-50/50 to-white rounded-3xl hover:shadow-2xl transition-all duration-300 border border-gray-200/50 relative overflow-hidden"
       >
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="font-semibold text-gray-900 group-hover:text-black transition-colors duration-300">
-              {title}
-            </h3>
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex items-center gap-4">
+              {icon && (
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl">{icon}</span>
+                </div>
+              )}
+              <div>
+                <h3 className="font-bold text-gray-900 group-hover:text-black transition-colors duration-300 text-lg">
+                  {title}
+                </h3>
+              </div>
+            </div>
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
           </div>
-          <p className="text-3xl font-bold text-gray-900 mb-2">{value}</p>
-          <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
+          
+          <div className="space-y-2">
+            <p className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent group-hover:from-black group-hover:to-gray-800 transition-all duration-300">
+              {value}
+            </p>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              {description}
+            </p>
+          </div>
         </div>
         
-        <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gray-100/30 to-transparent rounded-full blur-xl group-hover:w-32 group-hover:h-32 transition-all duration-700 opacity-50" />
+        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-gray-100/20 to-transparent rounded-full blur-2xl group-hover:w-40 group-hover:h-40 transition-all duration-700 opacity-50" />
+        <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-gray-50/30 to-transparent rounded-full blur-xl group-hover:w-24 group-hover:h-24 transition-all duration-700" />
       </Link>
     </motion.div>
   );
