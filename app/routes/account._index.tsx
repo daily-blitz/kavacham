@@ -118,7 +118,7 @@ export default function AccountDashboard() {
                 to="/account/orders"
                 className="inline-flex items-center gap-2 px-6 py-3 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-sm"
               >
-                View Orders
+                <span className="text-white">View Orders</span>
               </Link>
             </motion.div>
           </div>

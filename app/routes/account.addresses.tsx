@@ -412,14 +412,14 @@ function ExistingAddresses({
   defaultAddress,
 }: Pick<CustomerFragment, 'addresses' | 'defaultAddress'>) {
   return (
-    <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-12 lg:grid-cols-2 xl:gap-16">
       {addresses.nodes.map((address, index) => (
         <motion.div 
           key={address.id}
           initial={{opacity: 0, y: 20}}
           animate={{opacity: 1, y: 0}}
           transition={{duration: 0.5, delay: index * 0.1}}
-          className="group bg-gradient-to-br from-white via-gray-50/20 to-white border border-gray-200/50 rounded-3xl p-6 lg:p-8 relative hover:shadow-2xl transition-all duration-500 overflow-hidden"
+          className="group bg-gradient-to-br from-white via-gray-50/20 to-white border border-gray-200/50 rounded-3xl p-8 lg:p-12 relative hover:shadow-2xl transition-all duration-500 overflow-hidden"
         >
           {defaultAddress?.id === address.id && (
             <div className="absolute top-6 right-6 z-10">
@@ -429,7 +429,7 @@ function ExistingAddresses({
             </div>
           )}
           
-          <div className="mb-8 relative z-10">
+          <div className="mb-12 relative z-10">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <span className="text-xl">🏠</span>
@@ -446,7 +446,7 @@ function ExistingAddresses({
               </div>
             </div>
             
-            <div className="space-y-3 text-gray-700 leading-relaxed">
+            <div className="space-y-4 text-gray-700 leading-relaxed">
               <div className="flex items-start gap-3">
                 <span className="text-gray-400 mt-1">📍</span>
                 <div>
@@ -471,7 +471,7 @@ function ExistingAddresses({
             defaultAddress={defaultAddress}
           >
             {({stateForMethod}) => (
-              <div className="flex gap-4 relative z-10">
+              <div className="flex gap-6 relative z-10">
                 <motion.button
                   disabled={stateForMethod('PUT') !== 'idle'}
                   formMethod="PUT"
