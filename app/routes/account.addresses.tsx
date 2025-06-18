@@ -271,7 +271,7 @@ export default function Addresses() {
   const {defaultAddress, addresses} = customer;
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-16 lg:space-y-20">
       {/* Header Section */}
       <motion.div
         initial={{opacity: 0, y: 20}}
@@ -292,7 +292,7 @@ export default function Addresses() {
         initial={{opacity: 0, y: 20}}
         animate={{opacity: 1, y: 0}}
         transition={{duration: 0.6, delay: 0.2}}
-        className="bg-gradient-to-br from-white via-gray-50/30 to-white rounded-3xl p-8 md:p-10 border border-gray-200/50 shadow-lg relative overflow-hidden"
+        className="bg-gradient-to-br from-white via-gray-50/30 to-white rounded-3xl p-8 md:p-12 lg:p-16 border border-gray-200/50 shadow-lg relative overflow-hidden max-w-6xl mx-auto"
       >
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-8">
@@ -412,14 +412,14 @@ function ExistingAddresses({
   defaultAddress,
 }: Pick<CustomerFragment, 'addresses' | 'defaultAddress'>) {
   return (
-    <div className="grid gap-8 md:grid-cols-2">
+    <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
       {addresses.nodes.map((address, index) => (
         <motion.div 
           key={address.id}
           initial={{opacity: 0, y: 20}}
           animate={{opacity: 1, y: 0}}
           transition={{duration: 0.5, delay: index * 0.1}}
-          className="group bg-gradient-to-br from-white via-gray-50/20 to-white border border-gray-200/50 rounded-3xl p-8 relative hover:shadow-2xl transition-all duration-500 overflow-hidden"
+          className="group bg-gradient-to-br from-white via-gray-50/20 to-white border border-gray-200/50 rounded-3xl p-6 lg:p-8 relative hover:shadow-2xl transition-all duration-500 overflow-hidden"
         >
           {defaultAddress?.id === address.id && (
             <div className="absolute top-6 right-6 z-10">
@@ -545,7 +545,7 @@ export function AddressForm({
       <fieldset className="space-y-6">
         <input type="hidden" name="addressId" defaultValue={addressId} />
         
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
           <div>
             <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-3">First name*</label>
             <input
@@ -590,7 +590,7 @@ export function AddressForm({
           />
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
           <div>
             <label htmlFor="address1" className="block text-sm font-semibold text-gray-700 mb-3">Address line*</label>
             <input
@@ -620,7 +620,7 @@ export function AddressForm({
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <div>
             <label htmlFor="city" className="block text-sm font-semibold text-gray-700 mb-3">City*</label>
             <input
@@ -665,7 +665,7 @@ export function AddressForm({
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
           <div>
             <label htmlFor="territoryCode" className="block text-sm font-semibold text-gray-700 mb-3">Country Code*</label>
             <input

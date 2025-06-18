@@ -168,6 +168,64 @@ export default function AccountProfile() {
                 />
               </motion.div>
             </div>
+            
+            <div className="grid gap-6 md:grid-cols-2">
+              <motion.div
+                initial={{opacity: 0, x: -20}}
+                animate={{opacity: 1, x: 0}}
+                transition={{duration: 0.5, delay: 0.5}}
+              >
+                <label htmlFor="emailAddress" className="block text-sm font-semibold text-gray-700 mb-3">
+                  Email Address
+                </label>
+                <input
+                  id="emailAddress"
+                  name="emailAddress"
+                  type="email"
+                  autoComplete="email"
+                  placeholder="Email address (read-only)"
+                  aria-label="Email address"
+                  defaultValue={customer.emailAddress?.emailAddress ?? ''}
+                  readOnly
+                  className="w-full px-4 py-3 border border-gray-300/50 rounded-xl bg-gray-50/80 text-gray-600 cursor-not-allowed transition-all duration-300 backdrop-blur-sm shadow-sm"
+                />
+              </motion.div>
+              
+              <motion.div
+                initial={{opacity: 0, x: 20}}
+                animate={{opacity: 1, x: 0}}
+                transition={{duration: 0.5, delay: 0.6}}
+              >
+                <label htmlFor="phoneNumber" className="block text-sm font-semibold text-gray-700 mb-3">
+                  Phone Number
+                </label>
+                <input
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  type="tel"
+                  autoComplete="tel"
+                  placeholder="Phone number (read-only)"
+                  aria-label="Phone number"
+                  defaultValue={customer.phoneNumber?.phoneNumber ?? ''}
+                  readOnly
+                  className="w-full px-4 py-3 border border-gray-300/50 rounded-xl bg-gray-50/80 text-gray-600 cursor-not-allowed transition-all duration-300 backdrop-blur-sm shadow-sm"
+                />
+              </motion.div>
+            </div>
+            
+            <div className="mt-6 p-4 bg-blue-50/80 backdrop-blur-sm border border-blue-200/50 rounded-xl">
+              <div className="flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5">
+                  <span className="text-blue-600 text-sm">ℹ️</span>
+                </div>
+                <div>
+                  <p className="text-blue-800 font-medium text-sm mb-1">Contact Information</p>
+                  <p className="text-blue-700 text-sm">
+                    Email and phone number are managed through your account settings and cannot be changed here.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {action?.error && (

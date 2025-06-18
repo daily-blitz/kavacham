@@ -15,9 +15,15 @@ export async function loader({context}: LoaderFunctionArgs) {
               firstName
               lastName
               defaultAddress {
+                id
                 formatted
                 city
                 countryCode
+              }
+              addresses(first: 10) {
+                nodes {
+                  id
+                }
               }
             }
           }
@@ -110,7 +116,7 @@ export default function AccountDashboard() {
               </Link>
               <Link 
                 to="/account/orders"
-                className="inline-flex items-center gap-2 px-6 py-3 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-6 py-3 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 hover:text-white transition-all duration-300 backdrop-blur-sm"
               >
                 View Orders
               </Link>
@@ -143,7 +149,7 @@ export default function AccountDashboard() {
           
           <DashboardCard
             title="Profile Settings"
-            value={customer?.firstName ? "Complete" : "Incomplete"}
+            value={customer?.firstName && customer?.lastName ? "Complete" : "Incomplete"}
             description="Personal information status"
             href="/account/profile"
             index={1}
@@ -152,7 +158,7 @@ export default function AccountDashboard() {
           
           <DashboardCard
             title="Shipping Addresses"
-            value={customer?.defaultAddress ? "1+ Saved" : "None"}
+            value={customer?.addresses?.nodes?.length > 0 ? `${customer.addresses.nodes.length} Saved` : "None"}
             description="Saved delivery locations"
             href="/account/addresses"
             index={2}
