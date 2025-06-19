@@ -34,7 +34,7 @@ export function CartLineItem({
     <li key={id} className={`${layout === 'page' ? 'flex items-start p-4 border border-gray-200 rounded-lg' : 'cart-line'}`}>
       <div className={`${layout === 'page' ? 'flex-shrink-0 mr-4' : 'flex-shrink-0 mr-3'}`}>
         {image && (
-          <div className={`${layout === 'page' ? 'w-[120px] h-[120px]' : 'w-[60px] h-[60px]'} rounded-md overflow-hidden bg-gray-100`}>
+          <div className={`${layout === 'page' ? 'w-20 h-20 sm:w-24 sm:h-24 md:w-[120px] md:h-[120px]' : 'w-12 h-12 sm:w-[60px] sm:h-[60px]'} rounded-md overflow-hidden bg-gray-100`}>
             <Image
               alt={title}
               aspectRatio="1/1"

@@ -135,7 +135,7 @@ export function DeviceSelector({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
     >
-      <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+      <div className="bg-white rounded-xl p-4 sm:p-6 border border-gray-200 shadow-sm">
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
             Select Your Device
@@ -145,7 +145,7 @@ export function DeviceSelector({
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <MobileDeviceSelector
             devices={brands}
             selectedDevice={selectedBrand}

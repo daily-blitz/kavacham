@@ -16,7 +16,7 @@ import {ProductForm} from '~/components/ProductForm';
 import {DeviceSelector} from '~/components/DeviceSelector';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {motion} from 'framer-motion';
-import {useState, Suspense} from 'react';
+import {useState, useEffect, Suspense} from 'react';
 import {Await} from 'react-router';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -219,6 +219,12 @@ export default function Product() {
     image?: string;
   }>(getInitialDevice);
 
+  // Reset device selection when product changes
+  useEffect(() => {
+    const initialDevice = getInitialDevice();
+    setSelectedDevice(initialDevice);
+  }, [product.id]);
+
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
@@ -291,7 +297,7 @@ export default function Product() {
       transition={{duration: 0.5}}
     >
       <div className="container-custom py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
           {/* Enhanced Image Gallery */}
           <div className="space-y-4">
             <motion.div
@@ -322,7 +328,7 @@ export default function Product() {
               {/* Product Header */}
               <div className="mb-6">
                 <div className="flex items-start justify-between mb-2">
-                  <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{title}</h1>
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">{title}</h1>
                 </div>
                 {vendor && (
                   <p className="text-gray-600 mb-2">by <span className="font-medium">{vendor}</span></p>
@@ -367,7 +373,7 @@ export default function Product() {
               {/* Key Features */}
               <div className="bg-gray-50 rounded-xl p-6 mb-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Key Features</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="flex items-center gap-2">
                     <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -447,7 +453,7 @@ export default function Product() {
                   transition={{duration: 0.5, delay: 0.4}}
                 >
                   <h2 className="text-2xl font-bold text-gray-900 mb-8">You Might Also Like</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
                     {recommendations.slice(0, 4).map((product: any) => (
                       <Link 
                         key={product.id} 
