@@ -1,54 +1,20 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link} from 'react-router';
 import {motion} from 'framer-motion';
+import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
+import {CUSTOMER_ORDERS_QUERY} from '~/graphql/customer-account/CustomerOrdersQuery';
 
 export async function loader({context}: LoaderFunctionArgs) {
   const customerAccount = context.customerAccount;
   
   try {
     const [customer, orders] = await Promise.all([
-      customerAccount.query(
-        `#graphql
-          query CustomerDashboard {
-            customer {
-              id
-              firstName
-              lastName
-              defaultAddress {
-                id
-                formatted
-                city
-                countryCode
-              }
-              addresses(first: 10) {
-                nodes {
-                  id
-                }
-              }
-            }
-          }
-        `
-      ),
-      customerAccount.query(
-        `#graphql
-          query RecentOrders {
-            customer {
-              orders(first: 3, sortKey: PROCESSED_AT, reverse: true) {
-                nodes {
-                  id
-                  name
-                  processedAt
-                  totalPrice {
-                    amount
-                    currencyCode
-                  }
-                  fulfillmentStatus
-                }
-              }
-            }
-          }
-        `
-      )
+      customerAccount.query(CUSTOMER_DETAILS_QUERY),
+      customerAccount.query(CUSTOMER_ORDERS_QUERY, {
+        variables: {
+          first: 3,
+        },
+      })
     ]);
     
     return {customer, orders};
@@ -62,9 +28,10 @@ export async function loader({context}: LoaderFunctionArgs) {
 
 export default function AccountDashboard() {
   const {customer, orders} = useLoaderData<typeof loader>();
-  const recentOrders = orders?.customer?.orders?.nodes || [];
+  const customerData = (customer as any)?.customer;
+  const recentOrders = (orders as any)?.customer?.orders?.nodes || [];
 
-  if (!customer) {
+  if (!customerData) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
@@ -92,7 +59,7 @@ export default function AccountDashboard() {
               transition={{duration: 0.6, delay: 0.2}}
             >
               <h1 className="text-3xl md:text-4xl font-bold mb-3">
-                Welcome back, {customer?.firstName || 'Valued Customer'}! 👋
+                Welcome back, {customerData?.firstName || 'Valued Customer'}! 👋
               </h1>
               <p className="text-gray-300 text-lg leading-relaxed max-w-2xl">
                 Manage your orders, update your profile, and track your shopping journey all in one place.
@@ -149,7 +116,7 @@ export default function AccountDashboard() {
           
           <DashboardCard
             title="Profile Settings"
-            value={customer?.firstName && customer?.lastName ? "Complete" : "Incomplete"}
+            value={customerData?.firstName && customerData?.lastName ? "Complete" : "Incomplete"}
             description="Personal information status"
             href="/account/profile"
             index={1}
@@ -158,7 +125,7 @@ export default function AccountDashboard() {
           
           <DashboardCard
             title="Shipping Addresses"
-            value={customer?.addresses?.nodes?.length > 0 ? `${customer.addresses.nodes.length} Saved` : "None"}
+            value={customerData?.addresses?.nodes?.length > 0 ? `${customerData.addresses.nodes.length} Saved` : "None"}
             description="Saved delivery locations"
             href="/account/addresses"
             index={2}
@@ -187,7 +154,7 @@ export default function AccountDashboard() {
           </div>
           
           <div className="space-y-4">
-            {recentOrders.map((order, index) => (
+            {recentOrders.map((order: any, index: number) => (
               <motion.div 
                 key={order.id}
                 initial={{opacity: 0, x: -20}}
