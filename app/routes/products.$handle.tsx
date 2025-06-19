@@ -249,15 +249,6 @@ export default function Product() {
               )}
             </motion.div>
             
-            {selectedDevice.image && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center text-sm text-gray-600"
-              >
-                Showing case for {selectedDevice.brand} {selectedDevice.model}
-              </motion.div>
-            )}
             
             {/* Image Thumbnails */}
             {hasMultipleImages && (
@@ -327,6 +318,13 @@ export default function Product() {
                 <div className="prose prose-gray prose-sm max-w-none text-gray-600" dangerouslySetInnerHTML={{__html: descriptionHtml}} />
               </div>
               
+              {/* Device Selector */}
+              <DeviceSelector
+                metafields={metafields || []}
+                onSelectionChange={handleDeviceSelection}
+                className="mb-6"
+              />
+              
               {/* Key Features */}
               <div className="bg-gray-50 rounded-xl p-6 mb-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Key Features</h3>
@@ -357,13 +355,6 @@ export default function Product() {
                   </div>
                 </div>
               </div>
-              
-              {/* Device Selector */}
-              <DeviceSelector
-                metafields={metafields || []}
-                onSelectionChange={handleDeviceSelection}
-                className="mb-6"
-              />
               
               {/* Product Form */}
               <ProductForm

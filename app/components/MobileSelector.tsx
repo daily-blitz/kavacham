@@ -1,6 +1,6 @@
 import {useState, useMemo, useEffect} from 'react';
 import {motion} from 'framer-motion';
-import {MobileBrandSelector} from './MobileBrandSelector';
+import {MobileDeviceSelector} from './MobileDeviceSelector';
 import {MobileModelSelector} from './MobileModelSelector';
 
 interface MobileMetafield {

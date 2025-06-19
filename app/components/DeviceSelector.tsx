@@ -1,6 +1,6 @@
 import {useState, useMemo, useEffect} from 'react';
 import {motion} from 'framer-motion';
-import {MobileBrandSelector} from './MobileBrandSelector';
+import {MobileDeviceSelector} from './MobileDeviceSelector';
 import {MobileModelSelector} from './MobileModelSelector';
 
 interface DeviceMetafield {
@@ -46,20 +46,27 @@ export function DeviceSelector({
       // Parse brands
       if (brandsField?.value) {
         const brandData = JSON.parse(brandsField.value);
-        parsedBrands = Array.isArray(brandData) ? brandData.filter((item: any) => typeof item === 'string') : [];
+        // Handle new schema: { "devices": ["iphone", "macbook", "ipad"] }
+        if (brandData.devices && Array.isArray(brandData.devices)) {
+          parsedBrands = brandData.devices.filter((item: any) => typeof item === 'string');
+        } else if (Array.isArray(brandData)) {
+          // Fallback for old schema (direct array)
+          parsedBrands = brandData.filter((item: any) => typeof item === 'string');
+        }
       }
 
       // Parse models and images
       if (modelsField?.value) {
         const modelData = JSON.parse(modelsField.value) as Record<string, string[]>;
-        const imageData = imagesField?.value ? JSON.parse(imagesField.value) as Record<string, Record<string, string>> : {};
+        const imageData = imagesField?.value ? JSON.parse(imagesField.value) as Record<string, string> : {};
         
         Object.keys(modelData).forEach(brand => {
           const models = Array.isArray(modelData[brand]) ? modelData[brand] : [];
+          // All models for a device use the same device image
+          const deviceImage = typeof imageData[brand] === 'string' ? imageData[brand] : undefined;
           parsedBrandModels[brand] = models.map((model: string) => ({
             name: model,
-            image: typeof imageData[brand]?.[model] === 'string' ? imageData[brand][model] : 
-                   typeof imageData[model] === 'string' ? imageData[model] : undefined,
+            image: deviceImage, // Same image for all models of this device
           }));
         });
       }
@@ -128,28 +135,21 @@ export function DeviceSelector({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
     >
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200 shadow-sm">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-gray-900 rounded-lg">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              Select Your Device
-            </h3>
-            <p className="text-sm text-gray-600">
-              Choose your device for the perfect fit
-            </p>
-          </div>
+      <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            Select Your Device
+          </h3>
+          <p className="text-sm text-gray-600">
+            Choose your device for the perfect fit
+          </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <MobileBrandSelector
-            brands={brands}
-            selectedBrand={selectedBrand}
-            onBrandChange={handleBrandChange}
+          <MobileDeviceSelector
+            devices={brands}
+            selectedDevice={selectedBrand}
+            onDeviceChange={handleBrandChange}
           />
           
           <MobileModelSelector

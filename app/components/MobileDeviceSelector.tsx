@@ -1,37 +1,31 @@
 import {useState, useEffect} from 'react';
 import {motion, AnimatePresence} from 'framer-motion';
 
-interface MobileModel {
-  name: string;
-  image?: string;
-}
-
-interface MobileModelSelectorProps {
-  models: MobileModel[];
-  selectedModel: string;
-  onModelChange: (model: string) => void;
-  disabled?: boolean;
+interface MobileDeviceSelectorProps {
+  devices: string[];
+  selectedDevice: string;
+  onDeviceChange: (device: string) => void;
   className?: string;
 }
 
-export function MobileModelSelector({
-  models,
-  selectedModel,
-  onModelChange,
-  disabled = false,
+
+export function MobileDeviceSelector({
+  devices,
+  selectedDevice,
+  onDeviceChange,
   className = '',
-}: MobileModelSelectorProps) {
+}: MobileDeviceSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredModels = models.filter(model => 
-    model.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredDevices = devices.filter(device => 
+    device.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element;
-      if (!target.closest('.model-selector')) {
+      if (!target.closest('.device-selector')) {
         setIsOpen(false);
       }
     };
@@ -40,41 +34,27 @@ export function MobileModelSelector({
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Close dropdown when disabled
-  useEffect(() => {
-    if (disabled) {
-      setIsOpen(false);
-    }
-  }, [disabled]);
-
   return (
-    <div className={`model-selector relative ${className}`}>
+    <div className={`device-selector relative ${className}`}>
       <label className="block text-sm font-medium text-gray-900 mb-2">
-        Model
+        Device
       </label>
       
       <button
         type="button"
-        className={`w-full px-4 py-3 text-left bg-white border-2 rounded-xl shadow-sm focus:outline-none transition-all duration-200 relative group ${
-          disabled
-            ? 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
-            : 'border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 hover:border-gray-300'
-        }`}
-        onClick={() => !disabled && setIsOpen(!isOpen)}
-        disabled={disabled}
+        className="w-full px-4 py-3 text-left bg-white border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 hover:border-gray-300 transition-all duration-200 relative group"
+        onClick={() => setIsOpen(!isOpen)}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
         <span className="flex items-center">
           <span className="block truncate font-medium">
-            {disabled
-              ? 'Select a device first...'
-              : selectedModel || 'Choose a model...'}
+            {selectedDevice || 'Choose a device...'}
           </span>
         </span>
         <span className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
           <motion.svg
-            className={`h-5 w-5 transition-colors ${disabled ? 'text-gray-300' : 'text-gray-400 group-hover:text-gray-600'}`}
+            className="h-5 w-5 text-gray-400 group-hover:text-gray-600 transition-colors"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -91,7 +71,7 @@ export function MobileModelSelector({
       </button>
 
       <AnimatePresence>
-        {isOpen && !disabled && (
+        {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -100,7 +80,7 @@ export function MobileModelSelector({
             className="absolute z-20 mt-2 w-full bg-white shadow-xl rounded-xl border border-gray-200 overflow-hidden"
           >
             {/* Search Input */}
-            {models.length > 5 && (
+            {devices.length > 5 && (
               <div className="p-3 border-b border-gray-100">
                 <div className="relative">
                   <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +89,7 @@ export function MobileModelSelector({
                   <input
                     type="text"
                     className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                    placeholder="Search models..."
+                    placeholder="Search devices..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onClick={(e) => e.stopPropagation()}
@@ -119,27 +99,25 @@ export function MobileModelSelector({
             )}
             
             <div className="max-h-60 overflow-auto">
-              {filteredModels.length === 0 ? (
-                <div className="px-4 py-3 text-sm text-gray-500 text-center">
-                  {searchQuery ? 'No models match your search' : 'No models available for this brand'}
-                </div>
+              {filteredDevices.length === 0 ? (
+                <div className="px-4 py-3 text-sm text-gray-500 text-center">No devices found</div>
               ) : (
-                filteredModels.map((model) => (
+                filteredDevices.map((device) => (
                   <button
-                    key={model.name}
+                    key={device}
                     type="button"
                     className={`w-full text-left px-4 py-3 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none transition-colors flex items-center gap-3 ${
-                      selectedModel === model.name
+                      selectedDevice === device
                         ? 'bg-gray-900 text-white hover:bg-gray-800'
                         : 'text-gray-900'
                     }`}
                     onClick={() => {
-                      onModelChange(model.name);
+                      onDeviceChange(device);
                       setIsOpen(false);
                       setSearchQuery('');
                     }}
                   >
-                    <span className="font-medium flex-grow">{model.name}</span>
+                    <span className="font-medium">{device}</span>
                   </button>
                 ))
               )}

@@ -282,7 +282,7 @@ export default function Addresses() {
         <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-4">
           Shipping Addresses
         </h2>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed text-center">
           Manage your delivery locations for faster and more convenient checkout experiences.
         </p>
       </motion.div>
