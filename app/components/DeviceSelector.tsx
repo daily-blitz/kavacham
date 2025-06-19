@@ -160,34 +160,6 @@ export function DeviceSelector({
           />
         </div>
         
-        {selectedBrand && selectedModel && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            transition={{ duration: 0.3 }}
-            className="mt-4 overflow-hidden"
-          >
-            <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <div className="absolute inset-0 w-3 h-3 bg-green-500 rounded-full animate-ping"></div>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">
-                    Perfect Match Found!
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {selectedBrand} {selectedModel}
-                  </p>
-                </div>
-                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-          </motion.div>
-        )}
       </div>
     </motion.div>
   );

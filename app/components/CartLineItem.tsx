@@ -32,17 +32,17 @@ export function CartLineItem({
 
   return (
     <li key={id} className={`${layout === 'page' ? 'flex items-start p-4 border border-gray-200 rounded-lg' : 'cart-line'}`}>
-      <div className={`${layout === 'page' ? 'flex-shrink-0 mr-4' : ''}`}>
+      <div className={`${layout === 'page' ? 'flex-shrink-0 mr-4' : 'flex-shrink-0 mr-3'}`}>
         {image && (
-          <Image
-            alt={title}
-            aspectRatio="1/1"
-            data={image}
-            height={layout === 'page' ? 120 : 80}
-            loading="lazy"
-            width={layout === 'page' ? 120 : 80}
-            className="rounded-md"
-          />
+          <div className={`${layout === 'page' ? 'w-[120px] h-[120px]' : 'w-[60px] h-[60px]'} rounded-md overflow-hidden bg-gray-100`}>
+            <Image
+              alt={title}
+              aspectRatio="1/1"
+              data={image}
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
+          </div>
         )}
       </div>
 
@@ -60,21 +60,19 @@ export function CartLineItem({
               className="hover:text-gray-600 transition-colors"
             >
               <p className="font-medium text-lg mb-1">
-                {product.title}
+                { product.title}
               </p>
             </Link>
+
+            {product.vendor && (
+              <p className="text-sm text-gray-500 mb-2">
+                by {product.vendor}
+              </p>
+            )}
 
             <div className="text-gray-700 mb-2">
               <ProductPrice price={line?.cost?.totalAmount} />
             </div>
-
-            <ul className="text-sm text-gray-500 mb-3">
-              {selectedOptions.map((option) => (
-                <li key={option.name} className="inline-block mr-3">
-                  {option.name}: <span className="font-medium">{option.value}</span>
-                </li>
-              ))}
-            </ul>
 
             {(deviceBrand || deviceModel) && (
               <div className="flex items-center gap-2 mb-3">
@@ -177,9 +175,12 @@ function CartLineRemoveButton({
       <button
         disabled={disabled}
         type="submit"
-        className={className}
+        className={`${className} flex items-center justify-center w-6 h-6 rounded-full hover:bg-red-50 transition-colors`}
+        aria-label="Remove item"
       >
-        Remove
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1H8a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
       </button>
     </CartForm>
   );

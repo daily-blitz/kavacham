@@ -22,11 +22,11 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
       animate={{opacity: 1}}
       transition={{duration: 0.5}}
     >
-      <h4 className="text-xl font-semibold mb-4">Order Summary</h4>
-      <div className="space-y-4">
-        <dl className="flex justify-between items-center py-3 border-b border-gray-200">
-          <dt className="text-gray-600">Subtotal</dt>
-          <dd className="font-medium">
+      <h4 className="text-lg font-medium mb-3">Summary</h4>
+      <div className="space-y-2">
+        <dl className="flex justify-between items-center py-2">
+          <dt className="text-sm text-gray-600">Subtotal</dt>
+          <dd className="text-sm font-medium">
             {cart.cost?.subtotalAmount?.amount ? (
               <Money data={cart.cost?.subtotalAmount} />
             ) : (
@@ -36,15 +36,15 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
         </dl>
         
         {cart.cost?.totalTaxAmount?.amount && (
-          <dl className="flex justify-between items-center py-3 border-b border-gray-200">
-            <dt className="text-gray-600">Taxes</dt>
-            <dd className="font-medium">
+          <dl className="flex justify-between items-center py-2">
+            <dt className="text-sm text-gray-600">Taxes</dt>
+            <dd className="text-sm font-medium">
               <Money data={cart.cost.totalTaxAmount} />
             </dd>
           </dl>
         )}
         
-        <dl className="flex justify-between items-center py-3 border-b border-gray-200 text-lg font-semibold">
+        <dl className="flex justify-between items-center py-2 border-t border-gray-200 pt-3 font-semibold">
           <dt>Total</dt>
           <dd>
             {cart.cost?.totalAmount?.amount ? (
@@ -73,10 +73,10 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
       >
         Proceed to Checkout
       </a>
-      <div className="mt-4">
+      <div className="mt-2 px-2 pb-2">
         <Link 
           to="/collections" 
-          className="block text-center text-sm text-gray-600 hover:text-black transition-colors"
+          className="block text-center text-sm text-gray-600 hover:text-black transition-colors py-1"
         >
           Continue Shopping
         </Link>

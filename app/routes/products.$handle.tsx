@@ -176,15 +176,48 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
 
 export default function Product() {
   const {product, productRecommendations} = useLoaderData<typeof loader>();
-  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showImageModal, setShowImageModal] = useState(false);
+
+  // Parse metafields to get first device and model for initial state
+  const getInitialDevice = () => {
+    try {
+      const brandsField = product.metafields?.find(m => m && m.key === 'supported_brands' && m.namespace === 'custom');
+      const modelsField = product.metafields?.find(m => m && m.key === 'brand_models' && m.namespace === 'custom');
+      const imagesField = product.metafields?.find(m => m && m.key === 'model_images' && m.namespace === 'custom');
+
+      if (brandsField?.value && modelsField?.value) {
+        const brandData = JSON.parse(brandsField.value);
+        const modelData = JSON.parse(modelsField.value);
+        const imageData = imagesField?.value ? JSON.parse(imagesField.value) : {};
+
+        // Get first brand
+        const brands = brandData.devices || brandData || [];
+        const firstBrand = brands[0];
+        
+        if (firstBrand && modelData[firstBrand]) {
+          const firstModel = modelData[firstBrand][0];
+          const deviceImage = imageData[firstBrand];
+          
+          return {
+            brand: firstBrand,
+            model: firstModel,
+            image: deviceImage
+          };
+        }
+      }
+    } catch (error) {
+      console.warn('Error parsing initial device:', error);
+    }
+    
+    return { brand: '', model: '' };
+  };
 
   // State for device selection and custom image
   const [selectedDevice, setSelectedDevice] = useState<{
     brand: string;
     model: string;
     image?: string;
-  }>({ brand: '', model: '' });
+  }>(getInitialDevice);
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -203,24 +236,52 @@ export default function Product() {
   });
 
   const {title, descriptionHtml, metafields, tags, featuredImage, images, vendor} = product;
-  const hasMultipleImages = images?.edges?.length > 1;
 
   // Handle device selection change
   const handleDeviceSelection = (brand: string, model: string, modelImage?: string) => {
     setSelectedDevice({ brand, model, image: modelImage });
   };
 
-  // Determine which image to display
-  const displayImage = selectedDevice.image 
-    ? { 
-        __typename: 'Image' as const,
-        url: selectedDevice.image, 
-        altText: `${title} for ${selectedDevice.brand} ${selectedDevice.model}`, 
-        width: 800, 
-        height: 800, 
-        id: 'device-showcase' 
-      }
-    : selectedVariant?.image;
+  // Determine which image to display based on device selection
+  const getDisplayImage = () => {
+    const allImages = images?.edges || [];
+    
+    // Always use images from the product images array
+    if (allImages.length === 0) {
+      // No images available, fallback to selected variant image or featured image
+      return selectedVariant?.image || featuredImage;
+    }
+    
+    // If there's only 1 image, always show the first one
+    if (allImages.length === 1) {
+      return allImages[0].node;
+    }
+
+    // Use different product images based on device selection (only if multiple images exist)
+    const deviceModel = selectedDevice.model.toLowerCase();
+    
+    if (deviceModel.includes('ipad') && allImages[1]) {
+      return allImages[1].node;
+    }
+    
+    if (deviceModel.includes('macbook') && allImages[2]) {
+      return allImages[2].node;
+    }
+    
+    // Default to first image from the images array
+    return allImages[0].node;
+  };
+
+  const displayImage = getDisplayImage();
+  
+  // Debug logging
+  console.log('=== DEBUG IMAGE DATA ===');
+  console.log('Product images:', images);
+  console.log('Selected device:', selectedDevice);
+  console.log('Display image:', displayImage);
+  console.log('Selected variant:', selectedVariant);
+  console.log('Featured image:', featuredImage);
+  console.log('========================');
 
   return (
     <motion.div 
@@ -241,7 +302,7 @@ export default function Product() {
               transition={{ duration: 0.3 }}
               onClick={() => setShowImageModal(true)}
             >
-              <ProductImage image={displayImage || images?.edges?.[activeImageIndex]?.node} />
+              <ProductImage image={displayImage} />
               {selectedVariant?.compareAtPrice && (
                 <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                   Sale
@@ -249,28 +310,6 @@ export default function Product() {
               )}
             </motion.div>
             
-            
-            {/* Image Thumbnails */}
-            {hasMultipleImages && (
-              <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                {images.edges.map((edge: any, index: number) => (
-                  <button
-                    key={edge.node.id}
-                    onClick={() => setActiveImageIndex(index)}
-                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                      index === activeImageIndex ? 'border-gray-900' : 'border-gray-200 hover:border-gray-400'
-                    }`}
-                  >
-                    <Image
-                      data={edge.node}
-                      aspectRatio="1/1"
-                      sizes="(min-width: 640px) 100px, 80px"
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Product Details */}
@@ -460,7 +499,7 @@ export default function Product() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <ProductImage image={displayImage || images?.edges?.[activeImageIndex]?.node} />
+            <ProductImage image={displayImage} />
           </motion.div>
         </div>
       )}
