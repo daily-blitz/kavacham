@@ -3,6 +3,19 @@ import {storefrontRedirect} from '@shopify/hydrogen';
 import {createRequestHandler} from '@shopify/remix-oxygen';
 import {createAppLoadContext} from '~/lib/context';
 
+// Polyfill for Headers.prototype.getSetCookie in development
+if (typeof Headers !== 'undefined' && !Headers.prototype.getSetCookie) {
+  Headers.prototype.getSetCookie = function() {
+    const setCookieHeaders = [];
+    for (const [name, value] of this.entries()) {
+      if (name.toLowerCase() === 'set-cookie') {
+        setCookieHeaders.push(value);
+      }
+    }
+    return setCookieHeaders;
+  };
+}
+
 /**
  * Export a fetch handler in module format.
  */
