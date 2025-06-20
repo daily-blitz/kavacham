@@ -140,17 +140,11 @@ function SearchResultsProducts({
   }
 
   return (
-    <div className="search-result">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Products</h2>
-        <span className="text-sm text-gray-500">
-          {products.nodes.length} {products.nodes.length === 1 ? 'product' : 'products'}
-        </span>
-      </div>
+    <div>
       <Pagination connection={products}>
-        {({nodes, isLoading, NextLink, PreviousLink}) => {
-          const ItemsMarkup = (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {({nodes, isLoading, NextLink, PreviousLink}) => (
+          <div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
               {nodes.map((product) => {
                 const productUrl = urlWithTrackingParams({
                   baseUrl: `/products/${product.handle}`,
@@ -159,7 +153,6 @@ function SearchResultsProducts({
                 });
 
                 const price = product?.selectedOrFirstAvailableVariant?.price;
-                const compareAtPrice = product?.selectedOrFirstAvailableVariant?.compareAtPrice;
                 const image = product?.selectedOrFirstAvailableVariant?.image;
 
                 return (
@@ -167,106 +160,45 @@ function SearchResultsProducts({
                     key={product.id} 
                     prefetch="intent" 
                     to={productUrl}
-                    className="group bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-200 overflow-hidden"
+                    className="group"
                   >
-                    <div className="aspect-square bg-gray-50 overflow-hidden">
-                      {image ? (
+                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden mb-2 sm:mb-3">
+                      {image && (
                         <Image 
                           data={image} 
                           alt={product.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 50vw"
                         />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                        </div>
                       )}
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-gray-900 group-hover:text-black transition-colors line-clamp-2">
-                        {product.title}
-                      </h3>
-                      {product.vendor && (
-                        <p className="text-sm text-gray-500 mt-1">by {product.vendor}</p>
-                      )}
-                      <div className="mt-3 flex items-baseline gap-2">
-                        {price && (
-                          <span className="text-lg font-bold text-gray-900">
-                            <Money data={price} />
-                          </span>
-                        )}
-                        {compareAtPrice && (
-                          <span className="text-sm text-gray-500 line-through">
-                            <Money data={compareAtPrice} />
-                          </span>
-                        )}
-                        {compareAtPrice && price && (
-                          <span className="text-sm text-green-600 font-medium">
-                            Save {Math.round(((parseFloat(compareAtPrice.amount) - parseFloat(price.amount)) / parseFloat(compareAtPrice.amount)) * 100)}%
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                    <h3 className="font-medium text-gray-900 group-hover:text-gray-600 transition-colors text-sm sm:text-base line-clamp-2">
+                      {product.title}
+                    </h3>
+                    {price && (
+                      <p className="text-gray-600 mt-1 text-sm sm:text-base">
+                        <Money data={price} />
+                      </p>
+                    )}
                   </Link>
                 );
               })}
             </div>
-          );
-
-          return (
-            <div className="space-y-8">
-              {/* Previous Link */}
-              <div className="flex justify-center">
-                <PreviousLink>
-                  {isLoading ? (
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Loading...
-                    </div>
-                  ) : (
-                    <button className="flex items-center gap-2 bg-white border border-gray-200 rounded-full px-6 py-3 hover:border-black hover:shadow-lg transition-all duration-200 text-gray-700 hover:text-black">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                      </svg>
-                      Load previous
-                    </button>
-                  )}
-                </PreviousLink>
-              </div>
-
-              {/* Products Grid */}
-              {ItemsMarkup}
-
-              {/* Next Link */}
-              <div className="flex justify-center">
-                <NextLink>
-                  {isLoading ? (
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Loading...
-                    </div>
-                  ) : (
-                    <button className="flex items-center gap-2 bg-white border border-gray-200 rounded-full px-6 py-3 hover:border-black hover:shadow-lg transition-all duration-200 text-gray-700 hover:text-black">
-                      Load more
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                  )}
-                </NextLink>
-              </div>
+            
+            <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
+              <PreviousLink>
+                <span className="inline-block bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
+                  {isLoading ? 'Loading...' : '← Previous'}
+                </span>
+              </PreviousLink>
+              <NextLink>
+                <span className="inline-block bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg transition-colors text-sm sm:text-base">
+                  {isLoading ? 'Loading...' : 'Next →'}
+                </span>
+              </NextLink>
             </div>
-          );
-        }}
+          </div>
+        )}
       </Pagination>
     </div>
   );
@@ -275,7 +207,11 @@ function SearchResultsProducts({
 function SearchResultsEmpty() {
   return (
     <div className="text-center py-12">
-      <div className="text-6xl mb-4">🔍</div>
+      <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
       <h2 className="text-2xl font-bold text-gray-900 mb-2">No results found</h2>
       <p className="text-gray-600">Try different keywords or browse our categories.</p>
     </div>
