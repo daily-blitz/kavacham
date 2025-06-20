@@ -33,7 +33,7 @@ export function Footer({
                   {/* Logo */}
                   <div className="flex flex-col items-center space-y-4">
                     <img 
-                      src="/assets/Kavacham logo.svg" 
+                      src="/assets/kavacham-logo.svg" 
                       alt="Kavacham Logo" 
                       className="h-16 w-auto"
                     />

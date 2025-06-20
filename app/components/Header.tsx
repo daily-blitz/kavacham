@@ -36,7 +36,7 @@ export function Header({
       <div className="container-custom flex items-center justify-between">
         <NavLink prefetch="intent" to="/" className="header-logo flex flex-col items-center" end>
           <img 
-            src="/assets/Kavacham logo.svg" 
+            src="/assets/kavacham-logo.svg" 
             alt="Kavacham Logo" 
             className="h-10 w-auto"
           />

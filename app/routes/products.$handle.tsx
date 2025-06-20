@@ -279,15 +279,6 @@ export default function Product() {
   };
 
   const displayImage = getDisplayImage();
-  
-  // Debug logging
-  console.log('=== DEBUG IMAGE DATA ===');
-  console.log('Product images:', images);
-  console.log('Selected device:', selectedDevice);
-  console.log('Display image:', displayImage);
-  console.log('Selected variant:', selectedVariant);
-  console.log('Featured image:', featuredImage);
-  console.log('========================');
 
   return (
     <motion.div 
