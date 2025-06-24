@@ -37,7 +37,9 @@
       "Bash(mv:*)",
       "Bash(git rm:*)",
       "Bash(curl:*)",
-      "Bash(npx shopify app:*)"
+      "Bash(npx shopify app:*)",
+      "WebFetch(domain:run0k7-ss.myshopify.com)",
+      "WebFetch(domain:kavacham.in)"
     ],
     "deny": []
   }
