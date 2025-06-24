@@ -36,7 +36,8 @@
       "mcp__context7__get-library-docs",
       "Bash(mv:*)",
       "Bash(git rm:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npx shopify app:*)"
     ],
     "deny": []
   }
