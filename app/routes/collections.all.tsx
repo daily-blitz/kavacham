@@ -202,9 +202,12 @@ function EnhancedProductItem({
         initial={{opacity: 0, x: -20}}
         animate={{opacity: 1, x: 0}}
         transition={{duration: 0.5, delay: index * 0.05}}
-        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-4"
+        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
       >
-        <div className="flex items-center gap-4">
+        <Link 
+          to={`/products/${product.handle}`}
+          className="flex items-center gap-4 p-4 group"
+        >
           <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
             {image && (
               <Image
@@ -213,23 +216,20 @@ function EnhancedProductItem({
                 data={image}
                 loading={loading}
                 sizes="80px"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             )}
           </div>
           <div className="flex-grow">
-            <h3 className="font-semibold text-gray-900 mb-1">{product.title}</h3>
+            <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-gray-700 transition-colors">{product.title}</h3>
             <div className="text-lg font-bold text-gray-900">
               <Money data={product.priceRange.minVariantPrice} />
             </div>
           </div>
-          <Link 
-            to={`/products/${product.handle}`}
-            className="inline-flex items-center justify-center bg-white text-black border-2 border-black hover:bg-black hover:!text-white py-2 px-4 rounded-lg font-semibold transition-all duration-300 flex-shrink-0"
-          >
+          <div className="inline-flex items-center justify-center bg-white text-black border-2 border-black group-hover:bg-black group-hover:!text-white py-2 px-4 rounded-lg font-semibold transition-all duration-300 flex-shrink-0">
             View Details
-          </Link>
-        </div>
+          </div>
+        </Link>
       </motion.div>
     );
   }
@@ -241,34 +241,36 @@ function EnhancedProductItem({
       transition={{duration: 0.5, delay: index * 0.05}}
       className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden"
     >
-      <div className="aspect-square relative overflow-hidden">
-        {image && (
-          <Image
-            alt={image.altText || product.title}
-            aspectRatio="1/1"
-            data={image}
-            loading={loading}
-            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      </div>
-      
-      <div className="p-2 sm:p-3 md:p-4 text-center">
-        <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem] flex items-center justify-center text-sm sm:text-base">
-          {product.title}
-        </h3>
-        <div className="text-base sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">
-          <Money data={product.priceRange.minVariantPrice} />
+      <Link 
+        to={`/products/${product.handle}`}
+        className="block h-full"
+      >
+        <div className="aspect-square relative overflow-hidden">
+          {image && (
+            <Image
+              alt={image.altText || product.title}
+              aspectRatio="1/1"
+              data={image}
+              loading={loading}
+              sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
-        <Link 
-          to={`/products/${product.handle}`}
-          className="w-full inline-flex items-center justify-center bg-white text-black border-2 border-black hover:bg-black hover:!text-white py-1.5 sm:py-2 px-2 sm:px-4 rounded-lg font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 text-xs sm:text-sm"
-        >
-          View Product
-        </Link>
-      </div>
+        
+        <div className="p-2 sm:p-3 md:p-4 text-center">
+          <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem] flex items-center justify-center text-sm sm:text-base group-hover:text-gray-700 transition-colors">
+            {product.title}
+          </h3>
+          <div className="text-base sm:text-lg font-bold text-gray-900 mb-2 sm:mb-3">
+            <Money data={product.priceRange.minVariantPrice} />
+          </div>
+          <div className="w-full inline-flex items-center justify-center bg-white text-black border-2 border-black group-hover:bg-black group-hover:!text-white py-1.5 sm:py-2 px-2 sm:px-4 rounded-lg font-semibold transition-all duration-300 shadow-sm group-hover:shadow-md group-hover:scale-105 text-xs sm:text-sm">
+            View Product
+          </div>
+        </div>
+      </Link>
     </motion.div>
   );
 }

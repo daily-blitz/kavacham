@@ -33,14 +33,14 @@ export function CartMain({ layout, cart: originalCart }: CartMainProps) {
     <div className={className}>
       <CartEmpty hidden={linesCount} layout={layout} />
       {linesCount && (
-        <div className={layout === 'page' ? 'grid grid-cols-1 md:grid-cols-3 gap-8' : ''}>
-          <div className={layout === 'page' ? 'md:col-span-2' : ''} aria-labelledby="cart-lines">
+        <div className={layout === 'page' ? 'grid grid-cols-1 md:grid-cols-3 gap-8 items-start' : ''}>
+          <div className={layout === 'page' ? 'md:col-span-2 min-h-[400px]' : ''} aria-labelledby="cart-lines">
             {layout === 'page' && (
               <div className="mb-6 pb-4 border-b border-gray-200">
                 <h2 className="text-xl font-semibold">Items in Your Cart</h2>
               </div>
             )}
-            <ul className="space-y-6">
+            <ul className="space-y-6 pb-8">
               {(cart?.lines?.nodes ?? []).map((line, index) => (
                 <motion.div
                   key={line.id}

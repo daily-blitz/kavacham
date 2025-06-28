@@ -17,7 +17,7 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
   return (
     <motion.div 
       aria-labelledby="cart-summary" 
-      className={`${className} ${layout === 'page' ? 'bg-gray-50 p-6 rounded-lg sticky top-24' : ''}`}
+      className={`${className} ${layout === 'page' ? 'bg-gray-50 p-6 rounded-lg sticky top-24 self-start max-h-[calc(100vh-6rem)]' : ''}`}
       initial={{opacity: 0}}
       animate={{opacity: 1}}
       transition={{duration: 0.5}}

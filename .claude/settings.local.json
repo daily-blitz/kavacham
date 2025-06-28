@@ -39,7 +39,16 @@
       "Bash(curl:*)",
       "Bash(npx shopify app:*)",
       "WebFetch(domain:run0k7-ss.myshopify.com)",
-      "WebFetch(domain:kavacham.in)"
+      "WebFetch(domain:kavacham.in)",
+      "Bash(git remote remove:*)",
+      "Bash(git remote add:*)",
+      "Bash(git config:*)",
+      "Bash(git credential-osxkeychain:*)",
+      "Bash(ssh-keygen:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(ssh:*)",
+      "WebFetch(domain:shopify.dev)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

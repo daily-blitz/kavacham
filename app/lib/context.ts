@@ -34,12 +34,6 @@ export async function createAppLoadContext(
     cart: {
       queryFragment: CART_QUERY_FRAGMENT,
     },
-    customerAccount: {
-      loginUrl: '/account/login',
-      logoutUrl: '/account/logout',
-      authUrl: '/account/authorize',
-      unstableB2bLoginUrl: '/account/b2b/login',
-    },
   });
 
   return {
