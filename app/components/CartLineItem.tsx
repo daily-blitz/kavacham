@@ -4,7 +4,6 @@ import { CartForm, Image, type OptimisticCartLine } from '@shopify/hydrogen';
 import { useVariantUrl } from '~/lib/variants';
 import { Link } from 'react-router';
 import { ProductPrice } from './ProductPrice';
-import { useAside } from './Aside';
 import type { CartApiQueryFragment } from 'storefrontapi.generated';
 import { motion } from 'framer-motion';
 
@@ -24,17 +23,17 @@ export function CartLineItem({
   const { id, merchandise, attributes } = line;
   const { product, title, image, selectedOptions } = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
-  const { close } = useAside();
 
   // Extract device selection from line item attributes
   const deviceBrand = attributes?.find(attr => attr.key === 'Device Brand')?.value;
   const deviceModel = attributes?.find(attr => attr.key === 'Device Model')?.value;
 
   return (
-    <li key={id} className={`${layout === 'page' ? 'flex items-start p-4 border border-gray-200 rounded-lg' : 'cart-line'}`}>
-      <div className={`${layout === 'page' ? 'flex-shrink-0 mr-4' : 'flex-shrink-0 mr-3'}`}>
+    <li key={id} className="flex items-start p-4 border border-gray-200 rounded-lg bg-white">
+      {/* Product Image */}
+      <div className="flex-shrink-0 mr-4">
         {image && (
-          <div className={`${layout === 'page' ? 'w-20 h-20 sm:w-24 sm:h-24 md:w-[120px] md:h-[120px]' : 'w-12 h-12 sm:w-[60px] sm:h-[60px]'} rounded-md overflow-hidden bg-gray-100`}>
+          <div className="w-20 h-20 md:w-24 md:h-24 rounded-lg overflow-hidden bg-gray-100">
             <Image
               alt={title}
               aspectRatio="1/1"
@@ -46,56 +45,54 @@ export function CartLineItem({
         )}
       </div>
 
-      <div className={`${layout === 'page' ? 'flex-grow' : ''}`}>
-        <div className={`${layout === 'page' ? 'flex justify-between' : ''}`}>
-          <div>
-            <Link
-              prefetch="intent"
-              to={lineItemUrl}
-              onClick={() => {
-                if (layout === 'aside') {
-                  close();
-                }
-              }}
-              className="hover:text-gray-600 transition-colors"
-            >
-              <p className="font-medium text-lg mb-1">
-                { product.title}
-              </p>
-            </Link>
-
-            {product.vendor && (
-              <p className="text-sm text-gray-500 mb-2">
-                by {product.vendor}
-              </p>
-            )}
-
-            <div className="text-gray-700 mb-2">
-              <ProductPrice price={line?.cost?.totalAmount} />
-            </div>
-
-            {(deviceBrand || deviceModel) && (
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <p className="text-sm text-gray-700">
-                  Selected for: <span className="font-medium text-gray-900">
-                    {deviceBrand} {deviceModel}
-                  </span>
-                </p>
-              </div>
-            )}
-          </div>
-
-          {layout === 'page' && (
-            <CartLineRemoveButton
-              lineIds={[id]}
-              disabled={!!line.isOptimistic}
-              className="text-sm text-red-500 hover:text-red-700 transition-colors"
-            />
-          )}
+      {/* Product Details */}
+      <div className="flex-grow min-w-0">
+        {/* Product Title and Remove Button Row */}
+        <div className="flex justify-between items-start mb-2">
+          <Link
+            prefetch="intent"
+            to={lineItemUrl}
+            className="hover:text-gray-600 transition-colors flex-grow mr-2"
+          >
+            <h3 className="font-medium text-base leading-tight line-clamp-2">
+              {product.title}
+            </h3>
+          </Link>
+          
+          <CartLineRemoveButton
+            lineIds={[id]}
+            disabled={!!line.isOptimistic}
+            className="text-red-500 hover:text-red-700 transition-colors flex-shrink-0 p-1"
+          />
         </div>
 
-        <CartLineQuantity line={line} layout={layout} />
+        {/* Vendor */}
+        {product.vendor && (
+          <p className="text-sm text-gray-500 mb-2">
+            by {product.vendor}
+          </p>
+        )}
+
+        {/* Device Selection */}
+        {(deviceBrand || deviceModel) && (
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <p className="text-sm text-gray-700">
+              For: <span className="font-medium text-gray-900">
+                {deviceBrand} {deviceModel}
+              </span>
+            </p>
+          </div>
+        )}
+
+        {/* Price and Quantity Row */}
+        <div className="flex justify-between items-center">
+          <div className="text-gray-900 font-medium">
+            <ProductPrice price={line?.cost?.totalAmount} />
+          </div>
+          
+          <CartLineQuantity line={line} layout={layout} />
+        </div>
       </div>
     </li>
   );
@@ -113,21 +110,21 @@ function CartLineQuantity({ line, layout }: { line: CartLine; layout: CartLayout
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="flex items-center gap-2">
-      <div className={`flex items-center ${layout === 'page' ? 'border border-gray-300 rounded-md' : ''}`}>
+    <div className="flex items-center">
+      <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white">
         <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
           <button
             aria-label="Decrease quantity"
             disabled={quantity <= 1 || !!isOptimistic}
             name="decrease-quantity"
             value={prevQuantity}
-            className={`${layout === 'page' ? 'w-8 h-8 flex items-center justify-center text-lg font-medium hover:bg-gray-100 transition-colors' : 'w-6 h-6 flex items-center justify-center text-sm'}`}
+            className="w-9 h-9 flex items-center justify-center text-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
-            <span>&#8722;</span>
+            <span>−</span>
           </button>
         </CartLineUpdateButton>
 
-        <span className={`${layout === 'page' ? 'w-10 text-center font-medium' : 'w-8 text-center text-sm'}`}>
+        <span className="w-12 text-center font-medium text-gray-900 text-sm">
           {quantity}
         </span>
 
@@ -137,16 +134,12 @@ function CartLineQuantity({ line, layout }: { line: CartLine; layout: CartLayout
             name="increase-quantity"
             value={nextQuantity}
             disabled={!!isOptimistic}
-            className={`${layout === 'page' ? 'w-8 h-8 flex items-center justify-center text-lg font-medium hover:bg-gray-100 transition-colors' : 'w-6 h-6 flex items-center justify-center text-sm'}`}
+            className="w-9 h-9 flex items-center justify-center text-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
-            <span>&#43;</span>
+            <span>+</span>
           </button>
         </CartLineUpdateButton>
       </div>
-
-      {layout === 'aside' && (
-        <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
-      )}
     </div>
   );
 }

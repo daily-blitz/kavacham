@@ -1,8 +1,6 @@
 import {Suspense} from 'react';
 import {Await, NavLink, useAsyncValue, Link} from 'react-router';
 import {
-  type CartViewPayload,
-  useAnalytics,
   useOptimisticCart,
   Image,
 } from '@shopify/hydrogen';
@@ -146,23 +144,10 @@ function SearchToggle() {
 }
 
 function CartBadge({count}: {count: number | null}) {
-  const {open} = useAside();
-  const {publish, shop, cart, prevCart} = useAnalytics();
-
   return (
-    <a
-      href="/cart"
+    <Link
+      to="/cart"
       className="flex items-center"
-      onClick={(e) => {
-        e.preventDefault();
-        open('cart');
-        publish('cart_viewed', {
-          cart,
-          prevCart,
-          shop,
-          url: window.location.href || '',
-        } as CartViewPayload);
-      }}
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
         <circle cx="9" cy="21" r="1"></circle>
@@ -175,7 +160,7 @@ function CartBadge({count}: {count: number | null}) {
           {count}
         </span>
       )}
-    </a>
+    </Link>
   );
 }
 

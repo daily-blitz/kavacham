@@ -5,7 +5,6 @@ import type {
   ProductOptionValueSwatch,
 } from '@shopify/hydrogen/storefront-api-types';
 import {DeviceAwareAddToCartButton} from './DeviceAwareAddToCartButton';
-import {useAside} from './Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
 
 export function ProductForm({
@@ -22,7 +21,6 @@ export function ProductForm({
   };
 }) {
   const navigate = useNavigate();
-  const {open} = useAside();
   return (
     <div className="product-form">
       {productOptions.map((option) => {
@@ -110,7 +108,7 @@ export function ProductForm({
       <DeviceAwareAddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
-          open('cart');
+          navigate('/cart');
         }}
         selectedDevice={selectedDevice?.brand && selectedDevice?.model ? selectedDevice : undefined}
         lines={
