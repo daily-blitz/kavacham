@@ -221,7 +221,7 @@ export default function Homepage() {
           className="absolute inset-0 z-0"
           style={{
             background: 'linear-gradient(90deg, #85969C 0%, #EFA29D 50%, #929693 100%)',
-            opacity: 0.9
+            opacity: 1
           }}
         />
         <div className="container-custom relative z-[1]">
@@ -232,10 +232,10 @@ export default function Homepage() {
               transition={{duration: 0.5}}
               className="text-center mb-12"
             >
-              <h2 className="text-3xl md:text-4xl font-light text-white mb-2">
+              <h2 className="text-3xl md:text-4xl font-medium text-white mb-2 drop-shadow-lg">
                 Self Healing Scratch Protection May Not Be Something You Need,
               </h2>
-              <h3 className="text-2xl md:text-3xl font-light text-white">
+              <h3 className="text-2xl md:text-3xl font-medium text-white drop-shadow-lg">
                 But Definitely Something You Deserve.
               </h3>
             </motion.div>
@@ -245,102 +245,102 @@ export default function Homepage() {
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
                 transition={{duration: 0.5, delay: 0.1}}
-                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/20 transition-all duration-300 text-center"
               >
                 <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
                   <img 
                     src="/assets/accurate_fit_kavacham.png" 
                     alt="Accurate Fit"
-                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert transition-all duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 </div>
-                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Accurate Fit</h4>
+                <h4 className="text-xs md:text-xl font-semibold text-white transition-colors duration-300 leading-tight">Accurate Fit</h4>
               </motion.div>
             
               <motion.div 
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
                 transition={{duration: 0.5, delay: 0.2}}
-                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/20 transition-all duration-300 text-center"
               >
                 <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
                   <img 
                     src="/assets/no_residue_kavacham.png" 
                     alt="Zero Residue Removal"
-                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert transition-all duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 </div>
-                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Zero Residue Removal</h4>
+                <h4 className="text-xs md:text-xl font-semibold text-white transition-colors duration-300 leading-tight">Zero Residue Removal</h4>
               </motion.div>
             
               <motion.div 
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
                 transition={{duration: 0.5, delay: 0.3}}
-                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/20 transition-all duration-300 text-center"
               >
                 <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
                   <img 
                     src="/assets/customisation_kavacham.png" 
                     alt="Unlimited Customization"
-                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert transition-all duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 </div>
-                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Unlimited Customization</h4>
+                <h4 className="text-xs md:text-xl font-semibold text-white transition-colors duration-300 leading-tight">Unlimited Customization</h4>
               </motion.div>
             
               <motion.div 
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
                 transition={{duration: 0.5, delay: 0.4}}
-                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/20 transition-all duration-300 text-center"
               >
                 <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
                   <img 
                     src="/assets/bubble_free_kavacham.png" 
                     alt="Bubble-Free"
-                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert transition-all duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 </div>
-                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Bubble-Free</h4>
+                <h4 className="text-xs md:text-xl font-semibold text-white transition-colors duration-300 leading-tight">Bubble-Free</h4>
               </motion.div>
             
               <motion.div 
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
                 transition={{duration: 0.5, delay: 0.5}}
-                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/20 transition-all duration-300 text-center"
               >
                 <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
                   <img 
                     src="/assets/edge_toedge_kavacham.png" 
                     alt="Edge to Edge Protection"
-                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert transition-all duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 </div>
-                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Edge to Edge Protection</h4>
+                <h4 className="text-xs md:text-xl font-semibold text-white transition-colors duration-300 leading-tight">Edge to Edge Protection</h4>
               </motion.div>
             
               <motion.div 
                 initial={{opacity: 0, y: 20}}
                 animate={{opacity: 1, y: 0}}
                 transition={{duration: 0.5, delay: 0.6}}
-                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/15 transition-all duration-300 text-center"
+                className="group relative overflow-hidden rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 p-3 md:p-6 hover:bg-white/20 transition-all duration-300 text-center"
               >
                 <div className="relative h-12 w-12 md:h-20 md:w-20 mx-auto mb-2 md:mb-4 rounded-full overflow-hidden bg-white/20 backdrop-blur-sm">
                   <img 
                     src="/assets/reduced_fingerprint_kavacham.png" 
                     alt="Reduced Fingerprints"
-                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert group-hover:brightness-100 group-hover:invert-0 transition-all duration-300"
+                    className="w-full h-full object-contain p-2 md:p-3 filter brightness-0 invert transition-all duration-300"
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
                 </div>
-                <h4 className="text-xs md:text-xl font-medium text-white group-hover:text-white transition-colors duration-300 leading-tight">Reduced Fingerprints</h4>
+                <h4 className="text-xs md:text-xl font-semibold text-white transition-colors duration-300 leading-tight">Reduced Fingerprints</h4>
               </motion.div>
           </div>
           </div>

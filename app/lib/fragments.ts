@@ -221,6 +221,18 @@ export const FOOTER_QUERY = `#graphql
     menu(handle: $footerMenuHandle) {
       ...Menu
     }
+    collections(first: 10, sortKey: TITLE) {
+      nodes {
+        id
+        title
+        handle
+        productsCount: products(first: 250) {
+          nodes {
+            id
+          }
+        }
+      }
+    }
   }
   ${MENU_FRAGMENT}
 ` as const;
