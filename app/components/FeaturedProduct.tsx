@@ -3,7 +3,6 @@ import {Image, Money} from '@shopify/hydrogen';
 import {motion} from 'framer-motion';
 import type {Product} from '@shopify/hydrogen/storefront-api-types';
 import {useVariantUrl} from '~/lib/variants';
-import {CartForm} from '@shopify/hydrogen';
 
 interface FeaturedProductProps {
   product: any; // Using any temporarily to fix type issues
@@ -13,7 +12,6 @@ interface FeaturedProductProps {
 export function FeaturedProduct({product, index}: FeaturedProductProps) {
   const variantUrl = useVariantUrl(product.handle);
   const image = product.featuredImage;
-  const firstVariant = product.variants.nodes[0];
   
   return (
     <motion.div
@@ -46,39 +44,12 @@ export function FeaturedProduct({product, index}: FeaturedProductProps) {
         </div>
         
         <div className="mt-auto pt-2">
-          {firstVariant?.availableForSale && (
-            <CartForm
-              route="/cart"
-              inputs={{
-                lines: [
-                  {
-                    merchandiseId: firstVariant.id,
-                    quantity: 1,
-                  },
-                ],
-              }}
-              action={CartForm.ACTIONS.LinesAdd}
-            >
-              {(fetcher) => (
-                <button
-                  type="submit"
-                  disabled={fetcher.state !== 'idle'}
-                  className="w-full inline-flex items-center justify-center bg-white text-black border-2 border-black hover:bg-black hover:!text-white py-2.5 px-4 rounded-lg text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-white disabled:hover:text-black"
-                >
-                  {fetcher.state !== 'idle' ? 'Adding...' : 'Add to Cart'}
-                </button>
-              )}
-            </CartForm>
-          )}
-          
-          {!firstVariant?.availableForSale && (
-            <button
-              disabled
-              className="w-full inline-flex items-center justify-center bg-white text-gray-400 border-2 border-gray-300 py-2.5 px-4 rounded-lg text-sm font-semibold cursor-not-allowed"
-            >
-              Sold Out
-            </button>
-          )}
+          <Link
+            to={variantUrl}
+            className="w-full inline-flex items-center justify-center bg-white text-black border-2 border-black hover:bg-black hover:!text-white py-2.5 px-4 rounded-lg text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+          >
+            View Product
+          </Link>
         </div>
       </div>
     </motion.div>

@@ -118,13 +118,6 @@ export const CART_QUERY_FRAGMENT = `#graphql
     totalQuantity
     buyerIdentity {
       countryCode
-      customer {
-        id
-        email
-        firstName
-        lastName
-        displayName
-      }
       email
       phone
     }
@@ -227,6 +220,18 @@ export const FOOTER_QUERY = `#graphql
   ) @inContext(language: $language, country: $country) {
     menu(handle: $footerMenuHandle) {
       ...Menu
+    }
+    collections(first: 10, sortKey: TITLE) {
+      nodes {
+        id
+        title
+        handle
+        productsCount: products(first: 250) {
+          nodes {
+            id
+          }
+        }
+      }
     }
   }
   ${MENU_FRAGMENT}

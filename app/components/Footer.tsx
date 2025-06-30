@@ -77,11 +77,46 @@ export function Footer({
                   >
                     <h3 className="text-white font-semibold text-lg">Shop</h3>
                     <ul className="space-y-3">
-                      <FooterLink to="/collections/phone-skins">Phone Skins</FooterLink>
-                      <FooterLink to="/collections/phone-cases">Phone Cases</FooterLink>
-                      <FooterLink to="/collections/screen-protectors">Screen Protectors</FooterLink>
-                      <FooterLink to="/collections/accessories">Accessories</FooterLink>
-                      <FooterLink to="/collections/all">All Products</FooterLink>
+                      {footer?.collections?.nodes && footer.collections.nodes.length > 0 ? (
+                        <>
+                          {[...footer.collections.nodes]
+                            .sort((a, b) => {
+                              // Sort by product count (descending)
+                              const aCount = a.productsCount?.nodes?.length || 0;
+                              const bCount = b.productsCount?.nodes?.length || 0;
+                              return bCount - aCount;
+                            })
+                            .map((collection) => {
+                              const isEmpty = collection.productsCount?.nodes?.length === 0;
+                              
+                              if (isEmpty) {
+                                return (
+                                  <li key={collection.id}>
+                                    <span className="!text-gray-500 text-base font-medium inline-flex items-center cursor-not-allowed">
+                                      {collection.title}
+                                      <span className="ml-2 text-xs text-gray-400 font-normal">(Coming Soon)</span>
+                                    </span>
+                                  </li>
+                                );
+                              }
+                              
+                              return (
+                                <FooterLink 
+                                  key={collection.id} 
+                                  to={`/collections/${collection.handle}`}
+                                >
+                                  {collection.title}
+                                </FooterLink>
+                              );
+                            })}
+                          <FooterLink to="/collections/all">All Products</FooterLink>
+                        </>
+                      ) : (
+                        // Fallback if no collections are loaded
+                        <>
+                          <FooterLink to="/collections/all">All Products</FooterLink>
+                        </>
+                      )}
                     </ul>
                   </motion.div>
                   
@@ -230,7 +265,7 @@ function FooterLink({
     <li>
       <Link
         to={to}
-        className="!text-white hover:!text-gray-300 transition-colors duration-200 text-base font-medium"
+        className="!text-white hover:!text-gray-300 transition-colors duration-200 text-base font-medium inline-flex items-center"
       >
         {children}
       </Link>

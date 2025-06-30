@@ -11,13 +11,12 @@ type CartSummaryProps = {
 };
 
 export function CartSummary({cart, layout}: CartSummaryProps) {
-  const className =
-    layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
+  const className = 'cart-summary-page';
 
   return (
     <motion.div 
       aria-labelledby="cart-summary" 
-      className={`${className} ${layout === 'page' ? 'bg-gray-50 p-6 rounded-lg sticky top-24' : ''}`}
+      className={`${className} bg-gray-50 p-4 md:p-6 rounded-lg md:sticky md:top-24 md:self-start md:max-h-[calc(100vh-6rem)]`}
       initial={{opacity: 0}}
       animate={{opacity: 1}}
       transition={{duration: 0.5}}
@@ -44,6 +43,7 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
           </dl>
         )}
         
+        
         <dl className="flex justify-between items-center py-2 border-t border-gray-200 pt-3 font-semibold">
           <dt>Total</dt>
           <dd>
@@ -55,6 +55,7 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
           </dd>
         </dl>
       </div>
+
       
       <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
     </motion.div>
@@ -85,166 +86,3 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
   );
 }
 
-function CartDiscounts({
-  discountCodes,
-}: {
-  discountCodes?: CartApiQueryFragment['discountCodes'];
-}) {
-  const codes: string[] =
-    discountCodes
-      ?.filter((discount) => discount.applicable)
-      ?.map(({code}) => code) || [];
-
-  return (
-    <div className="py-3">
-      {/* Have existing discount, display it with a remove option */}
-      <dl hidden={!codes.length} className="flex justify-between items-center mb-3 text-sm">
-        <div>
-          <dt className="text-gray-600 mb-1">Applied Discount</dt>
-          <UpdateDiscountForm>
-            <div className="flex items-center">
-              <code className="bg-gray-100 px-2 py-1 rounded text-gray-800">{codes?.join(', ')}</code>
-              <button className="ml-2 text-red-500 text-xs hover:text-red-700 transition-colors">
-                Remove
-              </button>
-            </div>
-          </UpdateDiscountForm>
-        </div>
-      </dl>
-
-      {/* Show an input to apply a discount */}
-      <UpdateDiscountForm discountCodes={codes}>
-        <div className="flex mt-3">
-          <input 
-            type="text" 
-            name="discountCode" 
-            placeholder="Discount code" 
-            className="flex-grow border border-gray-300 rounded-l-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
-          />
-          <button 
-            type="submit"
-            className="bg-gray-200 text-gray-800 px-4 py-2 rounded-r-md text-sm font-medium hover:bg-gray-300 transition-colors"
-          >
-            Apply
-          </button>
-        </div>
-      </UpdateDiscountForm>
-    </div>
-  );
-}
-
-function UpdateDiscountForm({
-  discountCodes,
-  children,
-}: {
-  discountCodes?: string[];
-  children: React.ReactNode;
-}) {
-  return (
-    <CartForm
-      route="/cart"
-      action={CartForm.ACTIONS.DiscountCodesUpdate}
-      inputs={{
-        discountCodes: discountCodes || [],
-      }}
-    >
-      {children}
-    </CartForm>
-  );
-}
-
-function CartGiftCard({
-  giftCardCodes,
-}: {
-  giftCardCodes: CartApiQueryFragment['appliedGiftCards'] | undefined;
-}) {
-  const appliedGiftCardCodes = useRef<string[]>([]);
-  const giftCardCodeInput = useRef<HTMLInputElement>(null);
-  const codes: string[] =
-    giftCardCodes?.map(({lastCharacters}) => `***${lastCharacters}`) || [];
-
-  function saveAppliedCode(code: string) {
-    const formattedCode = code.replace(/\s/g, ''); // Remove spaces
-    if (!appliedGiftCardCodes.current.includes(formattedCode)) {
-      appliedGiftCardCodes.current.push(formattedCode);
-    }
-    giftCardCodeInput.current!.value = '';
-  }
-
-  function removeAppliedCode() {
-    appliedGiftCardCodes.current = [];
-  }
-
-  return (
-    <div className="py-3 border-b border-gray-200">
-      {/* Have existing gift card applied, display it with a remove option */}
-      <dl hidden={!codes.length} className="flex justify-between items-center mb-3 text-sm">
-        <div>
-          <dt className="text-gray-600 mb-1">Applied Gift Card</dt>
-          <UpdateGiftCardForm>
-            <div className="flex items-center">
-              <code className="bg-gray-100 px-2 py-1 rounded text-gray-800">{codes?.join(', ')}</code>
-              <button 
-                className="ml-2 text-red-500 text-xs hover:text-red-700 transition-colors"
-                onClick={() => removeAppliedCode()}
-              >
-                Remove
-              </button>
-            </div>
-          </UpdateGiftCardForm>
-        </div>
-      </dl>
-
-      {/* Show an input to apply a gift card */}
-      <UpdateGiftCardForm
-        giftCardCodes={appliedGiftCardCodes.current}
-        saveAppliedCode={saveAppliedCode}
-      >
-        <div className="flex mt-3">
-          <input
-            type="text"
-            name="giftCardCode"
-            placeholder="Gift card code"
-            ref={giftCardCodeInput}
-            className="flex-grow border border-gray-300 rounded-l-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black"
-          />
-          <button 
-            type="submit"
-            className="bg-gray-200 text-gray-800 px-4 py-2 rounded-r-md text-sm font-medium hover:bg-gray-300 transition-colors"
-          >
-            Apply
-          </button>
-        </div>
-      </UpdateGiftCardForm>
-    </div>
-  );
-}
-
-function UpdateGiftCardForm({
-  giftCardCodes,
-  saveAppliedCode,
-  children,
-}: {
-  giftCardCodes?: string[];
-  saveAppliedCode?: (code: string) => void;
-  removeAppliedCode?: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <CartForm
-      route="/cart"
-      action={CartForm.ACTIONS.GiftCardCodesUpdate}
-      inputs={{
-        giftCardCodes: giftCardCodes || [],
-      }}
-    >
-      {(fetcher: FetcherWithComponents<any>) => {
-        const code = fetcher.formData?.get('giftCardCode');
-        if (code && saveAppliedCode) {
-          saveAppliedCode(code as string);
-        }
-        return children;
-      }}
-    </CartForm>
-  );
-}

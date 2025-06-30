@@ -38,9 +38,40 @@ Disallow: /*?*oseid=*
 Disallow: /*preview_theme_id*
 Disallow: /*preview_script_id*
 
-User-agent: Nutch
-Disallow: /
+# E-commerce focused crawlers
+User-agent: Googlebot
+Allow: /products/
+Allow: /collections/
+Allow: /blogs/
+Allow: /pages/
+Allow: /
+Crawl-delay: 1
 
+User-agent: Bingbot
+Allow: /products/
+Allow: /collections/
+Allow: /blogs/
+Allow: /pages/
+Allow: /
+Crawl-delay: 1
+
+# Social media crawlers
+User-agent: facebookexternalhit
+Allow: /products/
+Allow: /collections/
+Allow: /
+
+User-agent: Twitterbot
+Allow: /products/
+Allow: /collections/
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /products/
+Allow: /collections/
+Allow: /
+
+# SEO tools with controlled access
 User-agent: AhrefsBot
 Crawl-delay: 10
 ${generalDisallowRules({sitemapUrl, shopId})}
@@ -49,11 +80,52 @@ User-agent: AhrefsSiteAudit
 Crawl-delay: 10
 ${generalDisallowRules({sitemapUrl, shopId})}
 
-User-agent: MJ12bot
-Crawl-Delay: 10
+User-agent: SemrushBot
+Crawl-delay: 10
+${generalDisallowRules({sitemapUrl, shopId})}
 
+User-agent: MJ12bot
+Crawl-delay: 10
+${generalDisallowRules({sitemapUrl, shopId})}
+
+User-agent: DotBot
+Crawl-delay: 10
+
+# Aggressive crawlers to block
+User-agent: Nutch
+Disallow: /
+
+User-agent: MegaIndex
+Disallow: /
+
+User-agent: SeznamBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+# Social media with controlled access
 User-agent: Pinterest
 Crawl-delay: 1
+Allow: /products/
+Allow: /collections/
+
+User-agent: WhatsApp
+Allow: /products/
+Allow: /collections/
+Allow: /
+
+# Allow specific product images and media
+User-agent: *
+Allow: /cdn/
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+Allow: /*.gif
+Allow: /*.webp
+Allow: /*.svg
+Allow: /*.css
+Allow: /*.js
 `.trim();
 }
 
@@ -76,7 +148,6 @@ Disallow: /checkout
 ${shopId ? `Disallow: /${shopId}/checkouts` : ''}
 ${shopId ? `Disallow: /${shopId}/orders` : ''}
 Disallow: /carts
-Disallow: /account
 Disallow: /collections/*sort_by*
 Disallow: /*/collections/*sort_by*
 Disallow: /collections/*+*
@@ -99,11 +170,15 @@ Disallow: /policies/
 Disallow: /*/*?*ls=*&ls=*
 Disallow: /*/*?*ls%3D*%3Fls%3D*
 Disallow: /*/*?*ls%3d*%3fls%3d*
-Disallow: /search
-Allow: /search/
 Disallow: /search/?*
 Disallow: /apple-app-site-association
 Disallow: /.well-known/shopify/monorail
+Disallow: /discount/
+Allow: /search
+Allow: /policies/privacy-policy
+Allow: /policies/terms-of-service
+Allow: /policies/shipping
+Allow: /policies/returns
 ${sitemapUrl ? `Sitemap: ${sitemapUrl}` : ''}`;
 }
 
